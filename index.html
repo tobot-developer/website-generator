@@ -310,6 +310,168 @@
             display: inline;
         }
 
+        /* ========== RESULT PAGE ========== */
+        .result-page {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 10rem 3rem 6rem;
+        }
+        .result-page.active {
+            display: block;
+            animation: fadeInUp 0.8s var(--ease-out-expo);
+        }
+        .result-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .result-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .result-header h2 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+        .result-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        .result-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        .result-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.5s var(--ease-out-expo);
+        }
+        .result-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+        .result-icon {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+        .result-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .result-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        .result-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+        .result-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+        .result-btn.primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+        .result-btn.primary:hover {
+            background: var(--accent-hover);
+        }
+        .result-footer {
+            text-align: center;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        /* Preview Modal */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .preview-modal.active {
+            display: flex;
+        }
+        .preview-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+        }
+        .preview-container {
+            position: relative;
+            width: 90vw;
+            height: 85vh;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+        }
+        .preview-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .preview-toolbar h4 {
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        .preview-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+        .preview-close:hover {
+            color: var(--text-primary);
+        }
+        .preview-container iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+        }
+
         /* ========== PREVIEW SECTION ========== */
         .preview-section {
             max-width: 1200px;
@@ -382,20 +544,171 @@
             margin-bottom: 2rem;
         }
 
-        .download-btn {
+        /* ========== RESULT PAGE ========== */
+        .result-page {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 10rem 3rem 6rem;
+            animation: fadeInUp 0.8s var(--ease-out-expo);
+        }
+        .result-page.active {
+            display: block;
+        }
+        .result-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .result-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .result-header h2 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+        .result-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        .result-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        .result-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.5s var(--ease-out-expo);
+        }
+        .result-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+        .result-icon {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+        .result-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .result-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        .result-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.875rem 2rem;
+            padding: 1rem 2rem;
             border: 1px solid var(--accent);
             color: var(--accent);
-            text-decoration: none;
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            transition: all 0.4s var(--ease-out-expo);
-            background: transparent;
             cursor: pointer;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+        .result-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+        .result-btn.primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+        .result-btn.primary:hover {
+            background: var(--accent-hover);
+        }
+        .result-footer {
+            text-align: center;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        /* Preview Modal */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .preview-modal.active {
+            display: flex;
+        }
+        .preview-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+        }
+        .preview-container {
+            position: relative;
+            width: 90vw;
+            height: 85vh;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+        }
+        .preview-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .preview-toolbar h4 {
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        .preview-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+        .preview-close:hover {
+            color: var(--text-primary);
+        }
+        .preview-container iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+        }
+
+        /* Hide generator when result shown */
+        .generator-section.hidden {
+            display: none;
         }
 
         .download-btn:hover {
@@ -575,30 +888,44 @@
         </div>
     </section>
 
-    <!-- Preview Section -->
-    <section class="preview-section" id="previewSection">
-        <div class="preview-header">
-            <h2>Deine <em>Website</em></h2>
-            <p>Preview deiner generierten Website</p>
+    <!-- Result Page (separate view) -->
+    <div class="result-page" id="resultPage">
+        <div class="result-header">
+            <h2>Deine <em>Website</em> ist fertig</h2>
+            <p class="result-subtitle">Wähle wie du fortfahren möchtest</p>
         </div>
-        <div class="preview-frame">
-            <iframe id="previewFrame" sandbox="allow-scripts"></iframe>
-        </div>
-        <div class="download-options">
-            <div class="download-card">
+        
+        <div class="result-options">
+            <!-- Preview Option -->
+            <div class="result-card">
+                <div class="result-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </div>
                 <h3>Live Preview</h3>
-                <p>Deine Website ist live verfügbar unter einer temporären URL.</p>
-                <a href="#" class="download-btn" id="previewLink" target="_blank">
+                <p>Anschauen im Browser</p>
+                <button class="result-btn primary" id="previewBtn">
                     Preview öffnen
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
                     </svg>
-                </a>
+                </button>
             </div>
-            <div class="download-card">
+            
+            <!-- Download Option -->
+            <div class="result-card">
+                <div class="result-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                </div>
                 <h3>ZIP Download</h3>
-                <p>Lade die komplette Website als ZIP herunter und hoste sie selbst.</p>
-                <button class="download-btn" id="downloadBtn">
+                <p>Für eigenes Hosting</p>
+                <button class="result-btn" id="downloadBtn">
                     ZIP herunterladen
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
@@ -606,7 +933,34 @@
                 </button>
             </div>
         </div>
-    </section>
+        
+        <!-- Preview Modal -->
+        <div class="preview-modal" id="previewModal">
+            <div class="preview-overlay" id="previewOverlay"></div>
+            <div class="preview-container">
+                <div class="preview-toolbar">
+                    <h4>Website Preview</h4>
+                    <button class="preview-close" id="previewClose">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+        </div>
+        
+        <!-- Back to Generator -->
+        <div class="result-footer">
+            <button class="back-btn" id="backBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Neue Website erstellen
+            </button>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -667,14 +1021,17 @@
                 // Generate the website HTML
                 const generatedHTML = generateWebsite(data);
 
-                // Show preview
-                const previewSection = document.getElementById('previewSection');
-                const previewFrame = document.getElementById('previewFrame');
-                previewFrame.srcdoc = generatedHTML;
-                previewSection.classList.add('active');
+                // Store for later use
+                window.generatedWebsiteHTML = generatedHTML;
+                window.generatedCompanyName = data.companyName || 'website';
 
-                // Scroll to preview
-                previewSection.scrollIntoView({ behavior: 'smooth' });
+                // Hide form, show result page
+                document.querySelector('.generator-section').style.display = 'none';
+                const resultPage = document.getElementById('resultPage');
+                resultPage.classList.add('active');
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
 
                 btn.classList.remove('generating');
                 btn.disabled = false;
@@ -683,16 +1040,48 @@
 
         // Download ZIP
         document.getElementById('downloadBtn').addEventListener('click', () => {
-            const data = Object.fromEntries(new FormData(document.getElementById('websiteForm')).entries());
-            const features = [];
-            document.querySelectorAll('input[name="features"]:checked').forEach(cb => {
-                features.push(cb.value);
-            });
-            data.features = features;
-            data.palette = document.getElementById('selectedPalette').value;
+            const html = window.generatedWebsiteHTML;
+            const filename = window.generatedCompanyName || 'website';
+            if (html) {
+                downloadZIP(html, filename);
+            } else {
+                alert('Bitte generiere zuerst eine Website!');
+            }
+        });
 
-            const html = generateWebsite(data);
-            downloadZIP(html, data.companyName || 'website');
+        // Preview button opens modal
+        document.getElementById('previewBtn').addEventListener('click', () => {
+            const html = window.generatedWebsiteHTML;
+            if (html) {
+                const modal = document.getElementById('previewModal');
+                const frame = document.getElementById('previewFrame');
+                frame.srcdoc = html;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+
+        // Close modal
+        document.getElementById('previewClose').addEventListener('click', closePreview);
+        document.getElementById('previewOverlay').addEventListener('click', closePreview);
+
+        function closePreview() {
+            const modal = document.getElementById('previewModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Back button - reset and show form again
+        document.getElementById('backBtn').addEventListener('click', () => {
+            document.getElementById('resultPage').classList.remove('active');
+            document.querySelector('.generator-section').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Reset form
+            document.getElementById('websiteForm').reset();
+            document.querySelectorAll('.palette-color').forEach(c => c.classList.remove('active'));
+            document.querySelector('.palette-color[data-palette="gold"]').classList.add('active');
+            document.getElementById('selectedPalette').value = 'gold';
         });
 
         // Website generator function
