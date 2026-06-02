@@ -3,235 +3,1343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Website Generator</title>
+    <title>AI Website Generator v4</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
+        :root {
+            --bg-primary: #0c0c0c;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --border: #2a2a2a;
+            --text-primary: #f5f0e8;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --accent: #c9a96e;
+            --accent-light: #d4b87a;
+            --accent-dark: #a88a4a;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --info: #3498db;
+            --font-head: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0c0c0c;
-            color: #f5f0e8;
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        /* Grain Texture Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 3rem 2rem;
         }
-        h1 {
+
+        /* Header */
+        .header {
             text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-family: var(--font-head);
+            font-size: 3.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 2rem;
             margin-bottom: 2rem;
-            font-size: 2rem;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
         }
-        .form-group {
+
+        .form-section:nth-child(2) { animation-delay: 0.1s; }
+        .form-section:nth-child(3) { animation-delay: 0.2s; }
+        .form-section:nth-child(4) { animation-delay: 0.3s; }
+        .form-section:nth-child(5) { animation-delay: 0.4s; }
+        .form-section:nth-child(6) { animation-delay: 0.5s; }
+
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            font-weight: 400;
             margin-bottom: 1.5rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
+
+        .section-title svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent);
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-grid .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2.5rem; }
+        }
+
+        .form-group {
+            margin-bottom: 0.5rem;
+        }
+
         label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #c9a96e;
-            font-size: 0.9rem;
+            color: var(--accent);
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-weight: 500;
         }
+
+        label .required {
+            color: var(--danger);
+            margin-left: 0.25rem;
+        }
+
         input, textarea, select {
             width: 100%;
-            padding: 0.75rem;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            color: #fff;
-            font-size: 1rem;
+            padding: 0.875rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
         }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.1);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-muted);
+        }
+
         textarea {
-            min-height: 100px;
+            min-height: 120px;
             resize: vertical;
         }
-        .btn {
-            width: 100%;
-            padding: 1rem;
-            background: #c9a96e;
-            color: #0c0c0c;
-            border: none;
-            font-size: 1rem;
-            font-weight: bold;
+
+        select {
             cursor: pointer;
-            transition: background 0.3s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c9a96e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
         }
-        .btn:hover {
-            background: #d4b87a;
+
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
-        .btn:disabled {
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem 0;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+            accent-color: var(--accent);
+        }
+
+        .radio-option span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Color Palette */
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .palette-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .palette-option {
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .palette-option:hover { transform: translateY(-2px); }
+
+        .palette-option input[type="radio"] {
+            display: none;
+        }
+
+        .palette-preview {
+            height: 60px;
+            border-radius: 4px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .palette-option input[type="radio"]:checked + .palette-preview {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.2);
+        }
+
+        .palette-name {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Feature Tags */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .feature-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .feature-tag:hover {
+            border-color: var(--accent);
+        }
+
+        .feature-tag input[type="checkbox"] {
+            width: auto;
+            accent-color: var(--accent);
+        }
+
+        .feature-tag span {
+            color: var(--text-secondary);
+        }
+
+        .feature-tag input[type="checkbox"]:checked + span {
+            color: var(--text-primary);
+        }
+
+        /* Advanced Toggles */
+        .toggle-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .toggle-grid { grid-template-columns: 1fr; }
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+        }
+
+        .toggle-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toggle-info svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .toggle-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-label .tag {
+            display: inline-block;
+            margin-left: 0.5rem;
+            padding: 0.125rem 0.5rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 2px;
+        }
+
+        /* Custom Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--border);
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider::before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: var(--text-primary);
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--accent);
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(20px);
+            background: var(--bg-primary);
+        }
+
+        .toggle-switch input:disabled + .toggle-slider {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        .result {
-            display: none;
-            margin-top: 2rem;
-            padding: 2rem;
-            background: #141414;
-            border: 1px solid #333;
-        }
-        .result.active {
-            display: block;
-        }
-        .result h2 {
-            margin-bottom: 1rem;
+
+        /* Submit Button */
+        .submit-section {
             text-align: center;
+            margin-top: 3rem;
+            animation: fadeInUp 0.6s ease-out 0.6s both;
         }
-        .actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        .action-btn {
-            padding: 1rem;
-            background: transparent;
-            border: 1px solid #c9a96e;
-            color: #c9a96e;
-            text-align: center;
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1.25rem 3rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .action-btn:hover {
-            background: #c9a96e;
-            color: #0c0c0c;
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
         }
-        .modal {
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(201, 169, 110, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            padding: 2rem;
+            background: var(--bg-primary);
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
-        .modal.active {
+
+        .loading-screen.active {
+            display: flex;
+        }
+
+        .loading-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--accent);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .loading-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 3rem;
+        }
+
+        .progress-container {
+            width: 300px;
+            max-width: 80vw;
+            height: 2px;
+            background: var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Result Page */
+        .result-page {
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .result-page.active {
+            display: block;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border: 2px solid var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--success);
+            stroke-width: 2;
+        }
+
+        .result-header h2 {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-header p {
+            color: var(--text-muted);
+        }
+
+        .summary-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-title {
+            font-family: var(--font-head);
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .summary-grid { grid-template-columns: 1fr; }
+        }
+
+        .summary-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-value {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .summary-value .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-value .tag.active {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Action Buttons */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .actions-grid { grid-template-columns: 1fr; }
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1.25rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(201, 169, 110, 0.05);
+        }
+
+        .action-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .back-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 0.875rem 2rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Preview Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10001;
+            padding: 2rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 85vh;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            animation: modalIn 0.4s ease-out;
         }
+
         .modal-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
+
+        .modal-title {
+            font-family: var(--font-head);
+            font-size: 1.25rem;
+            font-weight: 400;
+        }
+
         .modal-close {
             background: none;
             border: none;
-            color: #fff;
-            font-size: 1.5rem;
+            color: var(--text-muted);
             cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .modal iframe {
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-close svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .modal-frame {
             flex: 1;
             width: 100%;
             border: none;
             background: #fff;
         }
-        .back-btn {
-            display: block;
-            margin: 2rem auto 0;
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            border: 1px solid #333;
-            color: #888;
-            cursor: pointer;
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        .back-btn:hover {
-            border-color: #c9a96e;
-            color: #c9a96e;
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes progressShine {
+            from { left: -100%; }
+            to { left: 100%; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
         }
     </style>
 </head>
 <body>
+
+    <!-- Form Container -->
     <div class="container" id="formContainer">
-        <h1>AI Website Generator</h1>
-        
+        <div class="header">
+            <h1>AI Website Generator</h1>
+            <p>Professional Websites in Minutes</p>
+        </div>
+
         <form id="generatorForm">
-            <div class="form-group">
-                <label>Firmenname</label>
-                <input type="text" id="companyName" placeholder="Mein Unternehmen" required>
+            <!-- Basic Info -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Unternehmensinformationen
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Firmenname <span class="required">*</span></label>
+                        <input type="text" id="companyName" placeholder="Mein Unternehmen" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Slogan / Tagline</label>
+                        <input type="text" id="slogan" placeholder="Ihre Vision, unsere Mission">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Beschreibung <span class="required">*</span></label>
+                        <textarea id="description" placeholder="Beschreiben Sie Ihr Unternehmen, Ihre Dienstleistungen und Ihr Alleinstellungsmerkmal..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Branche</label>
+                        <select id="industry">
+                            <option value="">Bitte wählen</option>
+                            <option value="consulting">Beratung</option>
+                            <option value="tech">Tech / IT</option>
+                            <option value="finance">Finanzen</option>
+                            <option value="healthcare">Gesundheit</option>
+                            <option value="retail">Handel</option>
+                            <option value="creative">Kreativ</option>
+                            <option value="education">Bildung</option>
+                            <option value="other">Andere</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Standort</label>
+                        <input type="text" id="location" placeholder="Düsseldorf, Deutschland">
+                    </div>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>Beschreibung</label>
-                <textarea id="description" placeholder="Was macht dein Unternehmen?" required></textarea>
+
+            <!-- Contact Info -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Kontaktinformationen
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>E-Mail</label>
+                        <input type="email" id="email" placeholder="info@beispiel.de">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon</label>
+                        <input type="tel" id="phone" placeholder="+49 211 12345678">
+                    </div>
+                    <div class="form-group">
+                        <label>Website</label>
+                        <input type="url" id="website" placeholder="https://www.beispiel.de">
+                    </div>
+                    <div class="form-group">
+                        <label>LinkedIn</label>
+                        <input type="url" id="linkedin" placeholder="https://linkedin.com/company/...">
+                    </div>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>E-Mail</label>
-                <input type="email" id="email" placeholder="info@beispiel.de">
+
+            <!-- Design -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    Design & Stil
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label>Design-Stil</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="designStyle" value="dark" checked>
+                            <span>Dark Luxury</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="designStyle" value="light">
+                            <span>Light Minimal</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="designStyle" value="bold">
+                            <span>Bold Creative</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Farb-Palette</label>
+                    <div class="palette-grid">
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="gold" checked>
+                            <div class="palette-preview" style="background: linear-gradient(135deg, #c9a96e, #a88a4a, #f0d99c, #8b7355, #e8c887);">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="palette-name">Gold</div>
+                        </label>
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="blue">
+                            <div class="palette-preview" style="background: linear-gradient(135deg, #4a90d9, #2c5aa0, #7ab8f5, #1e3a5f, #5ba0e6);"></div>
+                            <div class="palette-name">Blau</div>
+                        </label>
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="warm">
+                            <div class="palette-preview" style="background: linear-gradient(135deg, #d4864a, #a66335, #f0b080, #7a4a28, #e8a068);"></div>
+                            <div class="palette-name">Warm</div>
+                        </label>
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="green">
+                            <div class="palette-preview" style="background: linear-gradient(135deg, #4a9e6a, #2d6a4f, #7bc49a, #1b4d3e, #5eb88a);"></div>
+                            <div class="palette-name">Grün</div>
+                        </label>
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="red">
+                            <div class="palette-preview" style="background: linear-gradient(135deg, #c94a4a, #9e3535, #e87a7a, #7a2828, #d46868);"></div>
+                            <div class="palette-name">Rot</div>
+                        </label>
+                    </div>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>Design-Stil</label>
-                <select id="style">
-                    <option value="dark">Dark Luxury</option>
-                    <option value="light">Light Minimal</option>
-                </select>
+
+            <!-- Features -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Features & Inhalte
+                </div>
+                <div class="features-grid">
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featStats" checked>
+                        <span>Statistiken/Zahlen</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featTestimonials" checked>
+                        <span>Testimonials</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featCases" checked>
+                        <span>Case Studies</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featTeam" checked>
+                        <span>Team/Vorstellung</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featFAQ" checked>
+                        <span>FAQ/Accordion</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featBlog">
+                        <span>Blog/News</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featContactForm" checked>
+                        <span>Kontaktformular</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featNewsletter" checked>
+                        <span>Newsletter</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featSocial" checked>
+                        <span>Social Media</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featLegal" checked>
+                        <span>Impressum/Datenschutz</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featMaps">
+                        <span>Google Maps</span>
+                    </label>
+                    <label class="feature-tag">
+                        <input type="checkbox" id="featCookies" checked>
+                        <span>Cookie-Banner</span>
+                    </label>
+                </div>
             </div>
-            
-            <button type="submit" class="btn" id="generateBtn">WEBSITE GENERIEREN</button>
+
+            <!-- Advanced -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    Erweiterte Einstellungen
+                </div>
+                <div class="toggle-grid">
+                    <div class="toggle-item">
+                        <div class="toggle-info">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                            <span class="toggle-label">Responsive Design <span class="tag">Always</span></span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked disabled>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-item">
+                        <div class="toggle-info">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                            <span class="toggle-label">SEO Meta Tags</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="advSEO" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-item">
+                        <div class="toggle-info">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                            <span class="toggle-label">Google Analytics</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="advAnalytics">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-item">
+                        <div class="toggle-info">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            <span class="toggle-label">Backend/API</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="advBackend">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-item">
+                        <div class="toggle-info">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            <span class="toggle-label">Kontaktformular Backend</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="advContactBackend">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-item">
+                        <div class="toggle-info">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            <span class="toggle-label">Mehrsprachig</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="advMultilang">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="submit-section">
+                <button type="submit" class="btn-primary" id="generateBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    Website Generieren
+                </button>
+            </div>
         </form>
     </div>
 
-    <div class="result" id="resultPage">
-        <h2>Deine Website ist fertig!</h2>
-        
-        <div class="actions">
-            <button class="action-btn" id="previewBtn">👁 Preview</button>
-            <button class="action-btn" id="downloadBtn">📥 ZIP Download</button>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-icon">
+            <svg viewBox="0 0 24 24">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
         </div>
-        
-        <button class="back-btn" id="backBtn">← Neue Website</button>
+        <div class="loading-title">Generiere Website</div>
+        <div class="loading-subtitle">Dieser Vorgang kann einige Sekunden dauern</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="progress-text" id="progressText">Initialisiere...</div>
     </div>
 
-    <div class="modal" id="previewModal">
-        <div class="modal-header">
-            <h3>Preview</h3>
-            <button class="modal-close" id="closeModal">✕</button>
+    <!-- Result Page -->
+    <div class="result-page" id="resultPage">
+        <div class="container">
+            <div class="result-header">
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <h2>Website erfolgreich generiert!</h2>
+                <p>Ihre professionelle Website ist fertig zum Download.</p>
+            </div>
+
+            <div class="summary-card" id="summaryCard">
+                <div class="summary-title">Zusammenfassung</div>
+                <div class="summary-grid" id="summaryGrid"></div>
+            </div>
+
+            <div class="actions-grid">
+                <button class="action-btn" id="previewBtn">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Preview Öffnen
+                </button>
+                <button class="action-btn" id="downloadBtn">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    ZIP Download
+                </button>
+                <button class="action-btn" id="newWebsiteBtn">
+                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Neue Website
+                </button>
+            </div>
+
+            <button class="back-btn" id="backBtn">Zurück zum Formular</button>
         </div>
-        <iframe id="previewFrame"></iframe>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    
-    <script>
-        // Store generated HTML
+    <!-- Preview Modal -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">Website Preview</div>
+                <button class="modal-close" id="closeModal">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <iframe class="modal-frame" id="previewFrame"></iframe>
+        </div>
+    </div>
+
+        // Store generated data
         let generatedHTML = '';
-        let companyName = '';
+        let generatedData = null;
 
-        // Form submission
-        document.getElementById('generatorForm').addEventListener('submit', function(e) {
+        // Helper: get palette colors
+        function getPalette(paletteName) {
+            const palettes = {
+                gold:   { primary: '#c9a96e', secondary: '#a88a4a', light: '#f0d99c', dark: '#8b7355', accent: '#e8c887' },
+                blue:   { primary: '#4a90d9', secondary: '#2c5aa0', light: '#7ab8f5', dark: '#1e3a5f', accent: '#5ba0e6' },
+                warm:   { primary: '#d4864a', secondary: '#a66335', light: '#f0b080', dark: '#7a4a28', accent: '#e8a068' },
+                green:  { primary: '#4a9e6a', secondary: '#2d6a4f', light: '#7bc49a', dark: '#1b4d3e', accent: '#5eb88a' },
+                red:    { primary: '#c94a4a', secondary: '#9e3535', light: '#e87a7a', dark: '#7a2828', accent: '#d46868' }
+            };
+            return palettes[paletteName] || palettes.gold;
+        }
+
+        // Helper: get design theme
+        function getTheme(style) {
+            const themes = {
+                dark: {
+                    bg: '#0c0c0c', bgSecondary: '#141414', bgTertiary: '#1a1a1a',
+                    text: '#f5f0e8', textSecondary: '#a0a0a0', border: '#2a2a2a'
+                },
+                light: {
+                    bg: '#ffffff', bgSecondary: '#f8f8f8', bgTertiary: '#f0f0f0',
+                    text: '#1a1a1a', textSecondary: '#666666', border: '#e0e0e0'
+                },
+                bold: {
+                    bg: '#1a0a2e', bgSecondary: '#240e3d', bgTertiary: '#2e1252',
+                    text: '#ffffff', textSecondary: '#b8a0d0', border: '#4a1a7a'
+                }
+            };
+            return themes[style] || themes.dark;
+        }
+
+        // Helper: industry label
+        function getIndustryLabel(value) {
+            const labels = {
+                consulting: 'Beratung', tech: 'Tech / IT', finance: 'Finanzen',
+                healthcare: 'Gesundheit', retail: 'Handel', creative: 'Kreativ',
+                education: 'Bildung', other: 'Andere'
+            };
+            return labels[value] || value;
+        }
+
+        // Form submission with loading screen
+        document.getElementById('generatorForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const btn = document.getElementById('generateBtn');
             btn.disabled = true;
-            btn.textContent = 'Generiere...';
             
-            // Get values
-            companyName = document.getElementById('companyName').value;
-            const description = document.getElementById('description').value;
-            const email = document.getElementById('email').value || 'info@example.com';
-            const style = document.getElementById('style').value;
+            // Show loading screen
+            const loadingScreen = document.getElementById('loadingScreen');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            loadingScreen.classList.add('active');
+            
+            // Collect form data
+            generatedData = {
+                companyName: document.getElementById('companyName').value,
+                slogan: document.getElementById('slogan').value,
+                description: document.getElementById('description').value,
+                industry: document.getElementById('industry').value,
+                location: document.getElementById('location').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                website: document.getElementById('website').value,
+                linkedin: document.getElementById('linkedin').value,
+                style: document.querySelector('input[name="designStyle"]:checked').value,
+                palette: document.querySelector('input[name="palette"]:checked').value,
+                features: {
+                    stats: document.getElementById('featStats').checked,
+                    testimonials: document.getElementById('featTestimonials').checked,
+                    cases: document.getElementById('featCases').checked,
+                    team: document.getElementById('featTeam').checked,
+                    faq: document.getElementById('featFAQ').checked,
+                    blog: document.getElementById('featBlog').checked,
+                    contactForm: document.getElementById('featContactForm').checked,
+                    newsletter: document.getElementById('featNewsletter').checked,
+                    social: document.getElementById('featSocial').checked,
+                    legal: document.getElementById('featLegal').checked,
+                    maps: document.getElementById('featMaps').checked,
+                    cookies: document.getElementById('featCookies').checked
+                },
+                advanced: {
+                    seo: document.getElementById('advSEO').checked,
+                    analytics: document.getElementById('advAnalytics').checked,
+                    backend: document.getElementById('advBackend').checked,
+                    contactBackend: document.getElementById('advContactBackend').checked,
+                    multilang: document.getElementById('advMultilang').checked
+                }
+            };
+            
+            // Simulate progress
+            const stages = [
+                { pct: 10, text: 'Analysiere Anforderungen...', delay: 400 },
+                { pct: 25, text: 'Generiere Layout...', delay: 500 },
+                { pct: 45, text: 'Erstelle Sections...', delay: 600 },
+                { pct: 65, text: 'Optimiere Design...', delay: 500 },
+                { pct: 80, text: 'Füge Interaktivität hinzu...', delay: 400 },
+                { pct: 95, text: 'Finalisiere...', delay: 500 },
+                { pct: 100, text: 'Fertig!', delay: 300 }
+            ];
+            
+            for (const stage of stages) {
+                await new Promise(r => setTimeout(r, stage.delay));
+                progressBar.style.width = stage.pct + '%';
+                progressText.textContent = stage.text;
+            }
             
             // Generate website
-            generatedHTML = generateWebsite({
-                companyName,
-                description,
-                email,
-                style
-            });
+            generatedHTML = generateWebsite(generatedData);
             
-            // Show result
-            setTimeout(() => {
-                document.getElementById('formContainer').style.display = 'none';
-                document.getElementById('resultPage').classList.add('active');
-                
-                btn.disabled = false;
-                btn.textContent = 'WEBSITE GENERIEREN';
-            }, 1500);
+            // Build summary
+            buildSummary(generatedData);
+            
+            // Hide loading, show result
+            loadingScreen.classList.remove('active');
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('resultPage').classList.add('active');
+            window.scrollTo(0, 0);
+            
+            btn.disabled = false;
         });
+
+        // Build summary card
+        function buildSummary(data) {
+            const grid = document.getElementById('summaryGrid');
+            const features = Object.entries(data.features)
+                .filter(([_, v]) => v)
+                .map(([k, _]) => {
+                    const names = {
+                        stats: 'Statistiken', testimonials: 'Testimonials', cases: 'Case Studies',
+                        team: 'Team', faq: 'FAQ', blog: 'Blog',
+                        contactForm: 'Kontaktformular', newsletter: 'Newsletter', social: 'Social Media',
+                        legal: 'Impressum', maps: 'Google Maps', cookies: 'Cookies'
+                    };
+                    return `<span class="tag active">${names[k]}</span>`;
+                }).join('') || '<span class="tag">Keine</span>';
+            
+            const adv = Object.entries(data.advanced)
+                .filter(([_, v]) => v)
+                .map(([k, _]) => {
+                    const names = {
+                        seo: 'SEO', analytics: 'Analytics', backend: 'Backend',
+                        contactBackend: 'Formular-Backend', multilang: 'Mehrsprachig'
+                    };
+                    return `<span class="tag active">${names[k]}</span>`;
+                }).join('') || '<span class="tag">Keine</span>';
+            
+            grid.innerHTML = `
+                <div class="summary-item"><div class="summary-label">Firmenname</div><div class="summary-value">${escapeHtml(data.companyName)}</div></div>
+                <div class="summary-item"><div class="summary-label">Branche</div><div class="summary-value">${getIndustryLabel(data.industry)}</div></div>
+                <div class="summary-item"><div class="summary-label">Design-Stil</div><div class="summary-value">${data.style === 'dark' ? 'Dark Luxury' : data.style === 'light' ? 'Light Minimal' : 'Bold Creative'}</div></div>
+                <div class="summary-item"><div class="summary-label">Farb-Palette</div><div class="summary-value">${data.palette.charAt(0).toUpperCase() + data.palette.slice(1)}</div></div>
+                <div class="summary-item full-width"><div class="summary-label">Aktive Features</div><div class="summary-value">${features}</div></div>
+                <div class="summary-item full-width"><div class="summary-label">Erweiterte Einstellungen</div><div class="summary-value">${adv}</div></div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
 
         // Preview
         document.getElementById('previewBtn').addEventListener('click', () => {
@@ -239,12 +1347,20 @@
             const frame = document.getElementById('previewFrame');
             frame.srcdoc = generatedHTML;
             modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         });
 
         // Close modal
-        document.getElementById('closeModal').addEventListener('click', () => {
-            document.getElementById('previewModal').classList.remove('active');
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        document.getElementById('previewModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
         });
+
+        function closeModal() {
+            document.getElementById('previewModal').classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('previewFrame').srcdoc = '';
+        }
 
         // Download ZIP
         document.getElementById('downloadBtn').addEventListener('click', () => {
@@ -255,13 +1371,47 @@
             
             const zip = new JSZip();
             zip.file('index.html', generatedHTML);
-            zip.file('README.md', `# ${companyName} Website\n\n## Setup\n1. Entpacke ZIP\n2. Öffne index.html im Browser\n3. Oder lade auf Webhost hoch\n\n## Hosting\n- GitHub Pages (kostenlos)\n- Vercel (kostenlos)\n- Netlify (kostenlos)`);
+            
+            const readme = `# ${generatedData.companyName} Website
+
+## Übersicht
+- **Firmenname:** ${generatedData.companyName}
+- **Branche:** ${getIndustryLabel(generatedData.industry)}
+- **Design:** ${generatedData.style === 'dark' ? 'Dark Luxury' : generatedData.style === 'light' ? 'Light Minimal' : 'Bold Creative'}
+- **Palette:** ${generatedData.palette.charAt(0).toUpperCase() + generatedData.palette.slice(1)}
+
+## Features
+${Object.entries(generatedData.features).filter(([_,v])=>v).map(([k,_])=>`- ${k}`).join('\n') || '- Keine'}
+
+## Erweiterte Einstellungen
+${Object.entries(generatedData.advanced).filter(([_,v])=>v).map(([k,_])=>`- ${k}`).join('\n') || '- Keine'}
+
+## Setup
+1. ZIP-Datei entpacken
+2. \`index.html\` im Browser öffnen
+3. Oder auf Webhost hochladen
+
+## Hosting-Empfehlungen
+- **Vercel** (kostenlos, schnell)
+- **Netlify** (kostenlos, einfach)
+- **GitHub Pages** (kostenlos, für statische Sites)
+- **InfinityFree** (kostenlos, PHP-Unterstützung)
+
+## Kontakt
+${generatedData.email || 'Nicht angegeben'}
+${generatedData.website || ''}
+
+---
+Generiert mit AI Website Generator v4
+`;
+            
+            zip.file('README.md', readme);
             
             zip.generateAsync({type: 'blob'}).then(content => {
                 const url = URL.createObjectURL(content);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `${companyName.toLowerCase().replace(/\s+/g, '-')}-website.zip`;
+                a.download = `${generatedData.companyName.toLowerCase().replace(/\s+/g, '-')}-website.zip`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -269,103 +1419,1170 @@
             });
         });
 
-        // Back button
-        document.getElementById('backBtn').addEventListener('click', () => {
+        // Neue Website / Back buttons
+        document.getElementById('newWebsiteBtn').addEventListener('click', resetForm);
+        document.getElementById('backBtn').addEventListener('click', resetForm);
+
+        function resetForm() {
             document.getElementById('resultPage').classList.remove('active');
             document.getElementById('formContainer').style.display = 'block';
             document.getElementById('generatorForm').reset();
             generatedHTML = '';
+            generatedData = null;
+            window.scrollTo(0, 0);
+        }
+
+        // Escape key closes modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
         });
 
-        // Website Generator
+        // Website Generator Function
         function generateWebsite(data) {
-            const isDark = data.style === 'dark';
-            const bg = isDark ? '#0c0c0c' : '#ffffff';
-            const text = isDark ? '#f5f0e8' : '#1a1a1a';
-            const accent = '#c9a96e';
+            const p = getPalette(data.palette);
+            const t = getTheme(data.style);
+            const f = data.features;
             
+            const fontHead = "'Cormorant Garamond', serif";
+            const fontBody = "'DM Sans', sans-serif";
+            
+            // CSS Reset & Base
+            let css = `
+                *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+                html { scroll-behavior: smooth; }
+                body {
+                    font-family: ${fontBody};
+                    background: ${t.bg};
+                    color: ${t.text};
+                    line-height: 1.6;
+                    overflow-x: hidden;
+                }
+                ::-webkit-scrollbar { width: 8px; }
+                ::-webkit-scrollbar-track { background: ${t.bg}; }
+                ::-webkit-scrollbar-thumb { background: ${t.border}; border-radius: 4px; }
+                ::-webkit-scrollbar-thumb:hover { background: ${p.primary}; }
+            `;
+            
+            // Navigation
+            let navHTML = '';
+            if (f.contactForm || f.about !== false) {
+                const links = [];
+                links.push('<a href="#hero">Start</a>');
+                links.push('<a href="#about">Über uns</a>');
+                if (f.stats) links.push('<a href="#stats">Zahlen</a>');
+                if (f.cases) links.push('<a href="#cases">Projekte</a>');
+                if (f.team) links.push('<a href="#team">Team</a>');
+                if (f.faq) links.push('<a href="#faq">FAQ</a>');
+                if (f.blog) links.push('<a href="#blog">Blog</a>');
+                if (f.contactForm) links.push('<a href="#contact">Kontakt</a>');
+                
+                css += `
+                    .nav {
+                        position: fixed; top: 0; left: 0; right: 0;
+                        background: rgba(12,12,12,0.9);
+                        backdrop-filter: blur(10px);
+                        z-index: 1000;
+                        padding: 1rem 2rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        border-bottom: 1px solid ${t.border};
+                    }
+                    .nav-logo {
+                        font-family: ${fontHead};
+                        font-size: 1.5rem;
+                        font-weight: 400;
+                        color: ${p.primary};
+                        text-decoration: none;
+                    }
+                    .nav-links {
+                        display: flex;
+                        gap: 2rem;
+                        list-style: none;
+                    }
+                    .nav-links a {
+                        color: ${t.textSecondary};
+                        text-decoration: none;
+                        font-size: 0.85rem;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        transition: color 0.3s;
+                    }
+                    .nav-links a:hover { color: ${p.primary}; }
+                    @media (max-width: 768px) {
+                        .nav-links { display: none; }
+                        .nav { padding: 1rem; }
+                    }
+                `;
+                navHTML = `
+                    <nav class="nav">
+                        <a href="#hero" class="nav-logo">${escapeHtml(data.companyName)}</a>
+                        <ul class="nav-links">${links.join('')}</ul>
+                    </nav>
+                `;
+            }
+            
+            // Hero Section
+            css += `
+                .hero {
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    padding: 8rem 2rem 4rem;
+                    position: relative;
+                    background: linear-gradient(135deg, ${t.bg} 0%, ${t.bgSecondary} 100%);
+                }
+                .hero-badge {
+                    display: inline-block;
+                    padding: 0.5rem 1.5rem;
+                    border: 1px solid ${p.primary};
+                    color: ${p.primary};
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 3px;
+                    margin-bottom: 2rem;
+                }
+                .hero h1 {
+                    font-family: ${fontHead};
+                    font-size: clamp(2.5rem, 6vw, 4.5rem);
+                    font-weight: 300;
+                    line-height: 1.1;
+                    margin-bottom: 1.5rem;
+                    letter-spacing: 2px;
+                }
+                .hero h1 span { color: ${p.primary}; }
+                .hero p {
+                    font-size: 1.1rem;
+                    color: ${t.textSecondary};
+                    max-width: 600px;
+                    margin: 0 auto 2.5rem;
+                    line-height: 1.8;
+                }
+                .hero-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding: 1rem 2.5rem;
+                    background: ${p.primary};
+                    color: ${t.bg};
+                    text-decoration: none;
+                    font-weight: 600;
+                    letter-spacing: 2px;
+                    text-transform: uppercase;
+                    font-size: 0.85rem;
+                    transition: all 0.3s;
+                    border: none;
+                    cursor: pointer;
+                }
+                .hero-btn:hover {
+                    background: ${p.light};
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 30px rgba(201,169,110,0.3);
+                }
+                .hero-scroll {
+                    position: absolute;
+                    bottom: 2rem;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    animation: bounce 2s infinite;
+                }
+                @keyframes bounce {
+                    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+                    40% { transform: translateX(-50%) translateY(-10px); }
+                    60% { transform: translateX(-50%) translateY(-5px); }
+                }
+            `;
+            
+            const heroHTML = `
+                <section class="hero" id="hero">
+                    <div>
+                        ${data.industry ? `<div class="hero-badge">${getIndustryLabel(data.industry)}</div>` : ''}
+                        <h1>${escapeHtml(data.companyName)}</h1>
+                        <p>${escapeHtml(data.slogan || data.description)}</p>
+                        <a href="#about" class="hero-btn">
+                            Mehr erfahren
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </a>
+                    </div>
+                    <div class="hero-scroll">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${t.textSecondary}" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </section>
+            `;
+            
+            // About Section
+            css += `
+                .section {
+                    padding: 6rem 2rem;
+                    max-width: 1000px;
+                    margin: 0 auto;
+                }
+                .section-header {
+                    text-align: center;
+                    margin-bottom: 4rem;
+                }
+                .section-label {
+                    display: inline-block;
+                    color: ${p.primary};
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 3px;
+                    margin-bottom: 1rem;
+                }
+                .section h2 {
+                    font-family: ${fontHead};
+                    font-size: clamp(2rem, 4vw, 3rem);
+                    font-weight: 300;
+                    margin-bottom: 1.5rem;
+                }
+                .section p {
+                    color: ${t.textSecondary};
+                    line-height: 1.8;
+                    max-width: 700px;
+                    margin: 0 auto;
+                }
+            `;
+            
+            const aboutHTML = `
+                <section class="section" id="about">
+                    <div class="section-header">
+                        <div class="section-label">Über Uns</div>
+                        <h2>Ihr Partner für Erfolg</h2>
+                        <p>${escapeHtml(data.description)}</p>
+                    </div>
+                </section>
+            `;
+            
+            // Stats Section
+            let statsHTML = '';
+            if (f.stats) {
+                css += `
+                    .stats {
+                        display: grid;
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 2rem;
+                        max-width: 1000px;
+                        margin: 0 auto;
+                        padding: 4rem 2rem;
+                    }
+                    .stat-item {
+                        text-align: center;
+                        padding: 2rem;
+                        border: 1px solid ${t.border};
+                        transition: all 0.3s;
+                    }
+                    .stat-item:hover {
+                        border-color: ${p.primary};
+                        transform: translateY(-5px);
+                    }
+                    .stat-number {
+                        font-family: ${fontHead};
+                        font-size: 3rem;
+                        font-weight: 300;
+                        color: ${p.primary};
+                        margin-bottom: 0.5rem;
+                    }
+                    .stat-label {
+                        color: ${t.textSecondary};
+                        font-size: 0.85rem;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                    }
+                    @media (max-width: 768px) {
+                        .stats { grid-template-columns: repeat(2, 1fr); }
+                    }
+                `;
+                statsHTML = `
+                    <section class="stats" id="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">500+</div>
+                            <div class="stat-label">Kunden</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">98%</div>
+                            <div class="stat-label">Zufriedenheit</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">15+</div>
+                            <div class="stat-label">Jahre Erfahrung</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Support</div>
+                        </div>
+                    </section>
+                `;
+            }
+            
+            // Case Studies
+            let casesHTML = '';
+            if (f.cases) {
+                css += `
+                    .cases-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 1.5rem;
+                        max-width: 1000px;
+                        margin: 0 auto;
+                        padding: 0 2rem 6rem;
+                    }
+                    .case-card {
+                        background: ${t.bgSecondary};
+                        border: 1px solid ${t.border};
+                        padding: 2rem;
+                        transition: all 0.3s;
+                    }
+                    .case-card:hover {
+                        border-color: ${p.primary};
+                        transform: translateY(-5px);
+                    }
+                    .case-icon {
+                        width: 48px;
+                        height: 48px;
+                        background: ${p.primary};
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-bottom: 1.5rem;
+                    }
+                    .case-icon svg { stroke: ${t.bg}; }
+                    .case-card h3 {
+                        font-family: ${fontHead};
+                        font-size: 1.5rem;
+                        margin-bottom: 0.75rem;
+                        font-weight: 400;
+                    }
+                    .case-card p {
+                        color: ${t.textSecondary};
+                        font-size: 0.9rem;
+                        line-height: 1.6;
+                    }
+                    @media (max-width: 768px) {
+                        .cases-grid { grid-template-columns: 1fr; }
+                    }
+                `;
+                casesHTML = `
+                    <section id="cases">
+                        <div class="section-header">
+                            <div class="section-label">Projekte</div>
+                            <h2>Ausgewählte Arbeiten</h2>
+                        </div>
+                        <div class="cases-grid">
+                            <div class="case-card">
+                                <div class="case-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                </div>
+                                <h3>Digitalisierung</h3>
+                                <p>End-to-End Digitalisierung eines mittelständischen Unternehmens mit 40% Effizienzsteigerung.</p>
+                            </div>
+                            <div class="case-card">
+                                <div class="case-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                </div>
+                                <h3>Cloud Migration</h3>
+                                <p>Seamless Migration von On-Premise zu Cloud mit 99.9% Uptime während des gesamten Prozesses.</p>
+                            </div>
+                            <div class="case-card">
+                                <div class="case-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                                </div>
+                                <h3>Strategieberatung</h3>
+                                <p>Entwicklung einer 5-Jahres-Strategie, die zu 25% Umsatzwachstum führte.</p>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            }
+            
+            // Testimonials
+            let testimonialsHTML = '';
+            if (f.testimonials) {
+                css += `
+                    .testimonials {
+                        max-width: 800px;
+                        margin: 0 auto;
+                        padding: 0 2rem 6rem;
+                    }
+                    .testimonial {
+                        background: ${t.bgSecondary};
+                        border: 1px solid ${t.border};
+                        padding: 2.5rem;
+                        margin-bottom: 1.5rem;
+                        position: relative;
+                    }
+                    .testimonial::before {
+                        content: '"';
+                        font-family: ${fontHead};
+                        font-size: 4rem;
+                        color: ${p.primary};
+                        opacity: 0.3;
+                        position: absolute;
+                        top: 1rem;
+                        left: 1.5rem;
+                    }
+                    .testimonial-text {
+                        font-style: italic;
+                        font-size: 1.1rem;
+                        line-height: 1.8;
+                        margin-bottom: 1.5rem;
+                        position: relative;
+                        z-index: 1;
+                    }
+                    .testimonial-author {
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+                    }
+                    .testimonial-avatar {
+                        width: 48px;
+                        height: 48px;
+                        border-radius: 50%;
+                        background: ${p.primary};
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: 600;
+                        color: ${t.bg};
+                    }
+                    .testimonial-name {
+                        font-weight: 600;
+                    }
+                    .testimonial-role {
+                        color: ${t.textSecondary};
+                        font-size: 0.85rem;
+                    }
+                `;
+                testimonialsHTML = `
+                    <section id="testimonials">
+                        <div class="section-header">
+                            <div class="section-label">Kundenstimmen</div>
+                            <h2>Was unsere Kunden sagen</h2>
+                        </div>
+                        <div class="testimonials">
+                            <div class="testimonial">
+                                <div class="testimonial-text">Die Zusammenarbeit war aussergewöhnlich. Das Team versteht es, komplexe Herausforderungen in pragmatische Lösungen zu verwandeln.</div>
+                                <div class="testimonial-author">
+                                    <div class="testimonial-avatar">MK</div>
+                                    <div>
+                                        <div class="testimonial-name">Maximilian Koch</div>
+                                        <div class="testimonial-role">CEO, TechVision GmbH</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="testimonial">
+                                <div class="testimonial-text">Professionell, zuverlässig und immer einen Schritt voraus. Unsere Effizienzsteigerung um 35% spricht für sich.</div>
+                                <div class="testimonial-author">
+                                    <div class="testimonial-avatar">SW</div>
+                                    <div>
+                                        <div class="testimonial-name">Sarah Weber</div>
+                                        <div class="testimonial-role">Geschäftsführerin, Innovate AG</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            }
+            
+            // Team
+            let teamHTML = '';
+            if (f.team) {
+                css += `
+                    .team-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 2rem;
+                        max-width: 900px;
+                        margin: 0 auto;
+                        padding: 0 2rem 6rem;
+                    }
+                    .team-member {
+                        text-align: center;
+                    }
+                    .team-avatar {
+                        width: 120px;
+                        height: 120px;
+                        border-radius: 50%;
+                        background: linear-gradient(135deg, ${p.primary}, ${p.secondary});
+                        margin: 0 auto 1.5rem;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: ${fontHead};
+                        font-size: 2.5rem;
+                        color: ${t.bg};
+                    }
+                    .team-name {
+                        font-family: ${fontHead};
+                        font-size: 1.5rem;
+                        margin-bottom: 0.25rem;
+                    }
+                    .team-role {
+                        color: ${p.primary};
+                        font-size: 0.85rem;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        margin-bottom: 0.75rem;
+                    }
+                    .team-desc {
+                        color: ${t.textSecondary};
+                        font-size: 0.9rem;
+                        line-height: 1.6;
+                    }
+                    @media (max-width: 768px) {
+                        .team-grid { grid-template-columns: 1fr; }
+                    }
+                `;
+                teamHTML = `
+                    <section id="team">
+                        <div class="section-header">
+                            <div class="section-label">Team</div>
+                            <h2>Das Team hinter dem Erfolg</h2>
+                        </div>
+                        <div class="team-grid">
+                            <div class="team-member">
+                                <div class="team-avatar">TM</div>
+                                <div class="team-name">Thomas Müller</div>
+                                <div class="team-role">Geschäftsführer</div>
+                                <div class="team-desc">15+ Jahre Erfahrung in Strategieberatung und digitale Transformation.</div>
+                            </div>
+                            <div class="team-member">
+                                <div class="team-avatar">LK</div>
+                                <div class="team-name">Laura Klein</div>
+                                <div class="team-role">Creative Director</div>
+                                <div class="team-desc">Expertin für Branding und User Experience mit internationalem Background.</div>
+                            </div>
+                            <div class="team-member">
+                                <div class="team-avatar">JS</div>
+                                <div class="team-name">Jan Schmidt</div>
+                                <div class="team-role">Lead Developer</div>
+                                <div class="team-desc">Full-Stack-Entwickler mit Leidenschaft für Performance und sauberen Code.</div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            }
+            
+            // FAQ
+            let faqHTML = '';
+            if (f.faq) {
+                css += `
+                    .faq-list {
+                        max-width: 800px;
+                        margin: 0 auto;
+                        padding: 0 2rem 6rem;
+                    }
+                    .faq-item {
+                        border: 1px solid ${t.border};
+                        margin-bottom: 1rem;
+                        overflow: hidden;
+                    }
+                    .faq-question {
+                        padding: 1.5rem;
+                        cursor: pointer;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        background: ${t.bgSecondary};
+                        transition: background 0.3s;
+                    }
+                    .faq-question:hover { background: ${t.bgTertiary}; }
+                    .faq-question h4 {
+                        font-family: ${fontHead};
+                        font-weight: 400;
+                        font-size: 1.25rem;
+                    }
+                    .faq-question svg {
+                        transition: transform 0.3s;
+                        stroke: ${p.primary};
+                        flex-shrink: 0;
+                    }
+                    .faq-item.active .faq-question svg { transform: rotate(180deg); }
+                    .faq-answer {
+                        max-height: 0;
+                        overflow: hidden;
+                        transition: max-height 0.3s ease;
+                    }
+                    .faq-item.active .faq-answer { max-height: 500px; }
+                    .faq-answer-inner {
+                        padding: 0 1.5rem 1.5rem;
+                        color: ${t.textSecondary};
+                        line-height: 1.8;
+                    }
+                `;
+                faqHTML = `
+                    <section id="faq">
+                        <div class="section-header">
+                            <div class="section-label">FAQ</div>
+                            <h2>Häufig gestellte Fragen</h2>
+                        </div>
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+                                    <h4>Wie startet ein Projekt?</h4>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                                <div class="faq-answer"><div class="faq-answer-inner">Nach einem initialen Gespräch erstellen wir ein massgeschneidertes Konzept. Transparent, effizient und zielorientiert.</div></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+                                    <h4>Wie lange dauert ein typisches Projekt?</h4>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                                <div class="faq-answer"><div class="faq-answer-inner">Je nach Umfang 4-12 Wochen. Wir arbeiten agil und halten Sie wöchentlich auf dem Laufenden.</div></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+                                    <h4>Bieten Sie auch Support nach Projektende?</h4>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                                <div class="faq-answer"><div class="faq-answer-inner">Selbstverständlich! Unsere Wartungs- und Supportverträge gewährleisten langfristigen Erfolg.</div></div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            }
+            
+            // Blog
+            let blogHTML = '';
+            if (f.blog) {
+                css += `
+                    .blog-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 1.5rem;
+                        max-width: 1000px;
+                        margin: 0 auto;
+                        padding: 0 2rem 6rem;
+                    }
+                    .blog-card {
+                        background: ${t.bgSecondary};
+                        border: 1px solid ${t.border};
+                        overflow: hidden;
+                        transition: all 0.3s;
+                    }
+                    .blog-card:hover {
+                        border-color: ${p.primary};
+                        transform: translateY(-5px);
+                    }
+                    .blog-image {
+                        height: 160px;
+                        background: linear-gradient(135deg, ${p.dark}, ${p.secondary});
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    .blog-image svg { stroke: ${p.primary}; }
+                    .blog-content { padding: 1.5rem; }
+                    .blog-date {
+                        color: ${p.primary};
+                        font-size: 0.75rem;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        margin-bottom: 0.75rem;
+                    }
+                    .blog-card h3 {
+                        font-family: ${fontHead};
+                        font-size: 1.25rem;
+                        margin-bottom: 0.75rem;
+                        font-weight: 400;
+                    }
+                    .blog-card p {
+                        color: ${t.textSecondary};
+                        font-size: 0.9rem;
+                        line-height: 1.6;
+                    }
+                    @media (max-width: 768px) {
+                        .blog-grid { grid-template-columns: 1fr; }
+                    }
+                `;
+                blogHTML = `
+                    <section id="blog">
+                        <div class="section-header">
+                            <div class="section-label">Blog</div>
+                            <h2>Neueste Insights</h2>
+                        </div>
+                        <div class="blog-grid">
+                            <div class="blog-card">
+                                <div class="blog-image">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                </div>
+                                <div class="blog-content">
+                                    <div class="blog-date">Januar 2026</div>
+                                    <h3>Die Zukunft der Digitalisierung</h3>
+                                    <p>Wie KI und Automatisierung Unternehmen revolutionieren.</p>
+                                </div>
+                            </div>
+                            <div class="blog-card">
+                                <div class="blog-image">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                </div>
+                                <div class="blog-content">
+                                    <div class="blog-date">Dezember 2025</div>
+                                    <h3>Cloud-Strategien 2026</h3>
+                                    <p>Best Practices für eine erfolgreiche Cloud-Migration.</p>
+                                </div>
+                            </div>
+                            <div class="blog-card">
+                                <div class="blog-image">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                                </div>
+                                <div class="blog-content">
+                                    <div class="blog-date">November 2025</div>
+                                    <h3>Erfolgreiches Team-Scaling</h3>
+                                    <p>Wie Sie Ihr Team effizient skalieren ohne Kulturverlust.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            }
+            
+            // Contact Section
+            let contactHTML = '';
+            if (f.contactForm || data.email || data.phone || data.location) {
+                css += `
+                    .contact-section {
+                        max-width: 1000px;
+                        margin: 0 auto;
+                        padding: 0 2rem 6rem;
+                    }
+                    .contact-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 4rem;
+                    }
+                    .contact-info h3 {
+                        font-family: ${fontHead};
+                        font-size: 2rem;
+                        margin-bottom: 1rem;
+                        font-weight: 400;
+                    }
+                    .contact-info p {
+                        color: ${t.textSecondary};
+                        margin-bottom: 2rem;
+                        line-height: 1.8;
+                    }
+                    .contact-detail {
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+                        margin-bottom: 1rem;
+                        color: ${t.textSecondary};
+                    }
+                    .contact-detail svg {
+                        stroke: ${p.primary};
+                        flex-shrink: 0;
+                    }
+                    .contact-detail a {
+                        color: ${p.primary};
+                        text-decoration: none;
+                        transition: color 0.3s;
+                    }
+                    .contact-detail a:hover { color: ${p.light}; }
+                    .contact-form {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1rem;
+                    }
+                    .contact-form input,
+                    .contact-form textarea {
+                        padding: 1rem;
+                        background: ${t.bgSecondary};
+                        border: 1px solid ${t.border};
+                        color: ${t.text};
+                        font-family: ${fontBody};
+                        font-size: 0.95rem;
+                        transition: border-color 0.3s;
+                    }
+                    .contact-form input:focus,
+                    .contact-form textarea:focus {
+                        outline: none;
+                        border-color: ${p.primary};
+                    }
+                    .contact-form textarea {
+                        min-height: 120px;
+                        resize: vertical;
+                    }
+                    .contact-form button {
+                        padding: 1rem 2rem;
+                        background: ${p.primary};
+                        color: ${t.bg};
+                        border: none;
+                        font-family: ${fontBody};
+                        font-weight: 600;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                    }
+                    .contact-form button:hover {
+                        background: ${p.light};
+                        transform: translateY(-2px);
+                    }
+                    @media (max-width: 768px) {
+                        .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+                    }
+                `;
+                
+                let contactDetails = '';
+                if (data.email) {
+                    contactDetails += `
+                        <div class="contact-detail">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            <a href="mailto:${escapeHtml(data.email)}">${escapeHtml(data.email)}</a>
+                        </div>
+                    `;
+                }
+                if (data.phone) {
+                    contactDetails += `
+                        <div class="contact-detail">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            <span>${escapeHtml(data.phone)}</span>
+                        </div>
+                    `;
+                }
+                if (data.location) {
+                    contactDetails += `
+                        <div class="contact-detail">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>${escapeHtml(data.location)}</span>
+                        </div>
+                    `;
+                }
+                if (data.linkedin) {
+                    contactDetails += `
+                        <div class="contact-detail">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                            <a href="${escapeHtml(data.linkedin)}" target="_blank">LinkedIn</a>
+                        </div>
+                    `;
+                }
+                if (data.website) {
+                    contactDetails += `
+                        <div class="contact-detail">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            <a href="${escapeHtml(data.website)}" target="_blank">Website</a>
+                        </div>
+                    `;
+                }
+                
+                const formHTML = f.contactForm ? `
+                    <form class="contact-form" onsubmit="event.preventDefault(); alert('Vielen Dank für Ihre Nachricht!');">
+                        <input type="text" placeholder="Ihr Name" required>
+                        <input type="email" placeholder="Ihre E-Mail" required>
+                        <textarea placeholder="Ihre Nachricht" required></textarea>
+                        <button type="submit">Nachricht senden</button>
+                    </form>
+                ` : '';
+                
+                contactHTML = `
+                    <section class="contact-section" id="contact">
+                        <div class="section-header">
+                            <div class="section-label">Kontakt</div>
+                            <h2>Lassen Sie uns sprechen</h2>
+                        </div>
+                        <div class="contact-grid">
+                            <div class="contact-info">
+                                <h3>${escapeHtml(data.companyName)}</h3>
+                                <p>Bereit für den nächsten Schritt? Kontaktieren Sie uns für ein unverbindliches Gespräch.</p>
+                                ${contactDetails}
+                            </div>
+                            ${formHTML}
+                        </div>
+                    </section>
+                `;
+            }
+            
+            // Newsletter
+            let newsletterHTML = '';
+            if (f.newsletter) {
+                css += `
+                    .newsletter {
+                        max-width: 600px;
+                        margin: 0 auto 6rem;
+                        padding: 3rem 2rem;
+                        background: ${t.bgSecondary};
+                        border: 1px solid ${t.border};
+                        text-align: center;
+                    }
+                    .newsletter h3 {
+                        font-family: ${fontHead};
+                        font-size: 1.75rem;
+                        margin-bottom: 0.75rem;
+                        font-weight: 400;
+                    }
+                    .newsletter p {
+                        color: ${t.textSecondary};
+                        margin-bottom: 1.5rem;
+                    }
+                    .newsletter-form {
+                        display: flex;
+                        gap: 0.75rem;
+                        max-width: 400px;
+                        margin: 0 auto;
+                    }
+                    .newsletter-form input {
+                        flex: 1;
+                        padding: 0.875rem 1rem;
+                        background: ${t.bg};
+                        border: 1px solid ${t.border};
+                        color: ${t.text};
+                        font-family: ${fontBody};
+                    }
+                    .newsletter-form input:focus {
+                        outline: none;
+                        border-color: ${p.primary};
+                    }
+                    .newsletter-form button {
+                        padding: 0.875rem 1.5rem;
+                        background: ${p.primary};
+                        color: ${t.bg};
+                        border: none;
+                        font-family: ${fontBody};
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: background 0.3s;
+                    }
+                    .newsletter-form button:hover { background: ${p.light}; }
+                    @media (max-width: 768px) {
+                        .newsletter-form { flex-direction: column; }
+                    }
+                `;
+                newsletterHTML = `
+                    <section class="newsletter">
+                        <h3>Newsletter</h3>
+                        <p>Bleiben Sie auf dem Laufenden mit unseren neuesten Insights.</p>
+                        <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Vielen Dank für die Anmeldung!');">
+                            <input type="email" placeholder="Ihre E-Mail-Adresse" required>
+                            <button type="submit">Anmelden</button>
+                        </form>
+                    </section>
+                `;
+            }
+            
+            // Footer
+            let footerHTML = '';
+            let footerCSS = '';
+            if (f.legal || f.social || data.email) {
+                footerCSS = `
+                    .footer {
+                        border-top: 1px solid ${t.border};
+                        padding: 3rem 2rem;
+                        text-align: center;
+                    }
+                    .footer-logo {
+                        font-family: ${fontHead};
+                        font-size: 1.5rem;
+                        color: ${p.primary};
+                        margin-bottom: 1.5rem;
+                    }
+                    .footer-social {
+                        display: flex;
+                        justify-content: center;
+                        gap: 1.5rem;
+                        margin-bottom: 1.5rem;
+                    }
+                    .footer-social a {
+                        color: ${t.textSecondary};
+                        transition: color 0.3s;
+                    }
+                    .footer-social a:hover { color: ${p.primary}; }
+                    .footer-links {
+                        display: flex;
+                        justify-content: center;
+                        gap: 2rem;
+                        margin-bottom: 1.5rem;
+                        flex-wrap: wrap;
+                    }
+                    .footer-links a {
+                        color: ${t.textSecondary};
+                        text-decoration: none;
+                        font-size: 0.85rem;
+                        transition: color 0.3s;
+                    }
+                    .footer-links a:hover { color: ${p.primary}; }
+                    .footer-copy {
+                        color: ${t.textSecondary};
+                        font-size: 0.8rem;
+                    }
+                `;
+                
+                let socialLinks = '';
+                if (f.social) {
+                    socialLinks = `
+                        <div class="footer-social">
+                            <a href="#" aria-label="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                            <a href="#" aria-label="Twitter"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                            <a href="#" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                        </div>
+                    `;
+                }
+                
+                let legalLinks = '';
+                if (f.legal) {
+                    legalLinks = `
+                        <div class="footer-links">
+                            <a href="#" onclick="alert('Impressum: ${escapeHtml(data.companyName)}, ${escapeHtml(data.location || 'Deutschland')}, ${escapeHtml(data.email || '')}')">Impressum</a>
+                            <a href="#" onclick="alert('Datenschutzerklärung: Ihre Daten sind bei uns sicher.')">Datenschutz</a>
+                            <a href="#" onclick="alert('AGB: Allgemeine Geschäftsbedingungen')">AGB</a>
+                        </div>
+                    `;
+                }
+                
+                footerHTML = `
+                    <footer class="footer">
+                        <div class="footer-logo">${escapeHtml(data.companyName)}</div>
+                        ${socialLinks}
+                        ${legalLinks}
+                        <div class="footer-copy">© ${new Date().getFullYear()} ${escapeHtml(data.companyName)}. Alle Rechte vorbehalten.</div>
+                    </footer>
+                `;
+            }
+            
+            // Cookie Banner
+            let cookieHTML = '';
+            if (f.cookies) {
+                css += `
+                    .cookie-banner {
+                        position: fixed;
+                        bottom: 0; left: 0; right: 0;
+                        background: ${t.bgSecondary};
+                        border-top: 1px solid ${t.border};
+                        padding: 1.5rem 2rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 2rem;
+                        z-index: 9998;
+                        transform: translateY(100%);
+                        transition: transform 0.5s ease;
+                    }
+                    .cookie-banner.active { transform: translateY(0); }
+                    .cookie-text {
+                        font-size: 0.85rem;
+                        color: ${t.textSecondary};
+                    }
+                    .cookie-text a {
+                        color: ${p.primary};
+                        text-decoration: underline;
+                    }
+                    .cookie-btn {
+                        padding: 0.625rem 1.5rem;
+                        background: ${p.primary};
+                        color: ${t.bg};
+                        border: none;
+                        font-family: ${fontBody};
+                        font-weight: 600;
+                        cursor: pointer;
+                        white-space: nowrap;
+                        transition: background 0.3s;
+                    }
+                    .cookie-btn:hover { background: ${p.light}; }
+                    @media (max-width: 768px) {
+                        .cookie-banner { flex-direction: column; text-align: center; }
+                    }
+                `;
+                cookieHTML = `
+                    <div class="cookie-banner" id="cookieBanner">
+                        <div class="cookie-text">Wir verwenden Cookies für ein optimales Erlebnis. <a href="#" onclick="alert('Datenschutzerklärung')">Mehr erfahren</a>.</div>
+                        <button class="cookie-btn" onclick="document.getElementById('cookieBanner').classList.remove('active')">Akzeptieren</button>
+                    </div>
+                    <script>
+                        setTimeout(() => document.getElementById('cookieBanner').classList.add('active'), 1000);
+                    </script>
+                `;
+            }
+            
+            // Scroll Reveal Animation CSS
+            css += `
+                .reveal {
+                    opacity: 0;
+                    transform: translateY(30px);
+                    transition: all 0.8s ease;
+                }
+                .reveal.active {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            `;
+            
+            // Combine all CSS
+            const fullCSS = `<style>${css}${footerCSS}</style>`;
+            
+            // Scroll reveal script
+            const scrollScript = `
+                <script>
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('active');
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+                </script>
+            `;
+            
+            // Meta tags
+            const metaTags = data.advanced.seo ? `
+                <meta name="description" content="${escapeHtml(data.description.slice(0, 160))}">
+                <meta name="keywords" content="${escapeHtml(data.companyName)}, ${getIndustryLabel(data.industry)}, consulting, business">
+                <meta property="og:title" content="${escapeHtml(data.companyName)}">
+                <meta property="og:description" content="${escapeHtml(data.description.slice(0, 160))}">
+                <meta property="og:type" content="website">
+            ` : '';
+            
+            // Analytics
+            const analytics = data.advanced.analytics ? `
+                <!-- Google Analytics placeholder - Replace GA_MEASUREMENT_ID -->
+                <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+                <script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', 'GA_MEASUREMENT_ID');
+                </script>
+            ` : '';
+            
+            // Multilang placeholder
+            const multilang = data.advanced.multilang ? `
+                <link rel="alternate" hreflang="de" href="/">
+                <link rel="alternate" hreflang="en" href="/en/">
+            ` : '';
+            
+            // Assemble final HTML
             return `<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${data.companyName}</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: ${bg};
-            color: ${text};
-            line-height: 1.6;
-        }
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 2rem;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: ${accent};
-            color: ${isDark ? '#0c0c0c' : '#ffffff'};
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .section {
-            padding: 5rem 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .section h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        .section p {
-            opacity: 0.8;
-            line-height: 1.8;
-        }
-        .contact {
-            padding: 3rem 2rem;
-            text-align: center;
-            border-top: 1px solid ${isDark ? '#333' : '#eee'};
-        }
-        .contact a {
-            color: ${accent};
-            text-decoration: none;
-        }
-    </style>
+    <title>${escapeHtml(data.companyName)}</title>
+    ${metaTags}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    ${multilang}
+    ${fullCSS}
+    ${analytics}
 </head>
 <body>
-    <div class="hero">
-        <div>
-            <h1>${data.companyName}</h1>
-            <p>${data.description}</p>
-            <a href="#contact" class="btn">Kontakt</a>
-        </div>
-    </div>
-    
-    <div class="section">
-        <h2>Über uns</h2>
-        <p>${data.description} Wir bringen langjährige Erfahrung und innovative Lösungen für unsere Kunden.</p>
-    </div>
-    
-    <div class="contact" id="contact">
-        <h2>Kontakt</h2>
-        <p><a href="mailto:${data.email}">${data.email}</a></p>
-    </div>
+    ${navHTML}
+    ${heroHTML}
+    ${aboutHTML}
+    ${statsHTML}
+    ${casesHTML}
+    ${testimonialsHTML}
+    ${teamHTML}
+    ${faqHTML}
+    ${blogHTML}
+    ${contactHTML}
+    ${newsletterHTML}
+    ${footerHTML}
+    ${cookieHTML}
+    ${scrollScript}
 </body>
 </html>`;
         }
