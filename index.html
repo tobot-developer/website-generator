@@ -3,200 +3,641 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Website Generator</title>
+    <title>AI Website Generator v5</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
+        :root {
+            --bg-primary: #0c0c0c;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --border: #2a2a2a;
+            --text-primary: #f5f0e8;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --accent: #c9a96e;
+            --accent-light: #d4b87a;
+            --accent-dark: #a88a4a;
+            --font-head: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0c0c0c;
-            color: #f5f0e8;
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        /* Grain Texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 2rem;
         }
+
         h1 {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            font-weight: 300;
             text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
         }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-size: 0.95rem;
+        }
+
+        /* Form Styling */
+        .form-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .form-section h2 {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+
         .form-group {
             margin-bottom: 1.5rem;
         }
+
         label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #c9a96e;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
+
         input, textarea, select {
             width: 100%;
-            padding: 0.75rem;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            color: #fff;
-            font-size: 1rem;
+            padding: 0.875rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            transition: border-color 0.3s;
         }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
         textarea {
             min-height: 100px;
             resize: vertical;
         }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            accent-color: var(--accent);
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Color Palette Selection */
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+        }
+
+        .palette-option {
+            cursor: pointer;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .palette-option:hover, .palette-option.active {
+            border-color: var(--accent);
+        }
+
+        .palette-preview {
+            width: 100%;
+            height: 40px;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Buttons */
         .btn {
             width: 100%;
-            padding: 1rem;
-            background: #c9a96e;
-            color: #0c0c0c;
+            padding: 1.25rem;
+            background: var(--accent);
+            color: var(--bg-primary);
             border: none;
             font-size: 1rem;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s var(--ease-out-expo);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
+
         .btn:hover {
-            background: #d4b87a;
+            background: var(--accent-light);
+            transform: translateY(-2px);
         }
+
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
+
+        /* Loading Screen */
+        .loading-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg-primary);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-screen.active {
+            display: flex;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 2px;
+            background: var(--border);
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%;
+            background: var(--accent);
+            animation: loading 2s ease-in-out;
+        }
+
+        @keyframes loading {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Result Page */
         .result {
             display: none;
-            margin-top: 2rem;
-            padding: 2rem;
-            background: #141414;
-            border: 1px solid #333;
+            padding: 2rem 0;
         }
+
         .result.active {
             display: block;
+            animation: fadeIn 0.5s var(--ease-out-expo);
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .result h2 {
-            margin-bottom: 1rem;
+            font-family: var(--font-head);
+            font-size: 2rem;
             text-align: center;
+            margin-bottom: 2rem;
         }
+
+        .summary-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+
+        .summary-card h3 {
+            color: var(--accent);
+            font-family: var(--font-head);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .feature-tag {
+            background: var(--bg-tertiary);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Action Buttons */
         .actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
-            margin-top: 1.5rem;
+            margin-bottom: 1rem;
         }
+
         .action-btn {
-            padding: 1rem;
+            padding: 1.25rem;
             background: transparent;
-            border: 1px solid #c9a96e;
-            color: #c9a96e;
+            border: 1px solid var(--accent);
+            color: var(--accent);
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+
         .action-btn:hover {
-            background: #c9a96e;
-            color: #0c0c0c;
+            background: var(--accent);
+            color: var(--bg-primary);
         }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            padding: 2rem;
-        }
-        .modal.active {
-            display: flex;
-            flex-direction: column;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        .modal iframe {
-            flex: 1;
-            width: 100%;
-            border: none;
-            background: #fff;
-        }
+
         .back-btn {
             display: block;
             margin: 2rem auto 0;
             padding: 0.75rem 1.5rem;
             background: transparent;
-            border: 1px solid #333;
-            color: #888;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            font-family: var(--font-head);
+            font-weight: 400;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
             cursor: pointer;
         }
-        .back-btn:hover {
-            border-color: #c9a96e;
-            color: #c9a96e;
+
+        .modal iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: white;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .palette-grid { grid-template-columns: repeat(2, 1fr); }
+            .actions { grid-template-columns: 1fr; }
+            .checkbox-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div style="text-align: center;">
+            <h2 style="font-family: var(--font-head); font-weight: 300; margin-bottom: 0.5rem;">Website wird erstellt</h2>
+            <p style="color: var(--text-secondary);">Bitte warte einen Moment...</p>
+            <div class="loading-bar"></div>
+            <p class="loading-text" id="loadingText">Design wird generiert...</p>
+        </div>
+    </div>
+
+    <!-- Form Container -->
     <div class="container" id="formContainer">
-        <h1>AI Website Generator</h1>
+        <h1>Website Generator</h1>
+        <p class="subtitle">Erstelle eine professionelle Website in Minuten</p>
         
         <form id="generatorForm">
-            <div class="form-group">
-                <label>Firmenname</label>
-                <input type="text" id="companyName" placeholder="Mein Unternehmen" required>
+            <!-- Basis Info -->
+            <div class="form-section">
+                <h2>Basis Informationen</h2>
+                
+                <div class="form-group">
+                    <label>Firmenname *</label>
+                    <input type="text" id="companyName" placeholder="z.B. Tono Consulting" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Slogan / Tagline</label>
+                    <input type="text" id="slogan" placeholder="z.B. Strategie trifft Innovation">
+                </div>
+                
+                <div class="form-group">
+                    <label>Beschreibung *</label>
+                    <textarea id="description" placeholder="Was macht dein Unternehmen?" required></textarea>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>Beschreibung</label>
-                <textarea id="description" placeholder="Was macht dein Unternehmen?" required></textarea>
+
+            <!-- Branche & Stil -->
+            <div class="form-section">
+                <h2>Branche & Design</h2>
+                
+                <div class="form-group">
+                    <label>Branche</label>
+                    <select id="industry">
+                        <option value="consulting">Beratung / Consulting</option>
+                        <option value="tech">Technologie / IT</option>
+                        <option value="creative">Kreativ / Design</option>
+                        <option value="finance">Finanzen</option>
+                        <option value="health">Gesundheit</option>
+                        <option value="education">Bildung</option>
+                        <option value="retail">Handel / E-Commerce</option>
+                        <option value="other">Sonstiges</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Design-Stil</label>
+                    <select id="style">
+                        <option value="dark">Dark Luxury (Gold & Schwarz)</option>
+                        <option value="light">Light Minimal (Clean & Modern)</option>
+                        <option value="bold">Bold Creative (Farben & Energie)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Farb-Palette</label>
+                    <div class="palette-grid" id="paletteGrid">
+                        <!-- Wird per JS gefüllt -->
+                    </div>
+                    <input type="hidden" id="selectedPalette" value="gold">
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>E-Mail</label>
-                <input type="email" id="email" placeholder="info@beispiel.de">
+
+            <!-- Features -->
+            <div class="form-section">
+                <h2>Features</h2>
+                
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-stats" checked>
+                        <label for="feat-stats">📊 Statistiken</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-testimonials" checked>
+                        <label for="feat-testimonials">💬 Testimonials</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-cases">
+                        <label for="feat-cases">📁 Case Studies</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-team">
+                        <label for="feat-team">👥 Team</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-faq">
+                        <label for="feat-faq">❓ FAQ</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-blog">
+                        <label for="feat-blog">📝 Blog</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-contact" checked>
+                        <label for="feat-contact">📧 Kontaktformular</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-newsletter">
+                        <label for="feat-newsletter">📬 Newsletter</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-social">
+                        <label for="feat-social">🔗 Social Media</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-legal" checked>
+                        <label for="feat-legal">📄 Impressum/Datenschutz</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-maps">
+                        <label for="feat-maps">🗺️ Google Maps</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="feat-cookies" checked>
+                        <label for="feat-cookies">🍪 Cookie-Banner</label>
+                    </div>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>Design-Stil</label>
-                <select id="style">
-                    <option value="dark">Dark Luxury</option>
-                    <option value="light">Light Minimal</option>
-                </select>
+
+            <!-- Kontakt -->
+            <div class="form-section">
+                <h2>Kontakt</h2>
+                
+                <div class="form-group">
+                    <label>E-Mail</label>
+                    <input type="email" id="email" placeholder="info@beispiel.de">
+                </div>
+                
+                <div class="form-group">
+                    <label>Telefon</label>
+                    <input type="tel" id="phone" placeholder="+49 123 456789">
+                </div>
+                
+                <div class="form-group">
+                    <label>Standort</label>
+                    <input type="text" id="location" placeholder="Düsseldorf, Deutschland">
+                </div>
+                
+                <div class="form-group">
+                    <label>Website (optional)</label>
+                    <input type="url" id="website" placeholder="https://...">
+                </div>
+                
+                <div class="form-group">
+                    <label>LinkedIn</label>
+                    <input type="text" id="linkedin" placeholder="linkedin.com/in/...">
+                </div>
             </div>
-            
-            <button type="submit" class="btn" id="generateBtn">WEBSITE GENERIEREN</button>
+
+            <!-- Advanced -->
+            <div class="form-section">
+                <h2>Erweiterte Einstellungen</h2>
+                
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="adv-seo" checked>
+                        <label for="adv-seo">🔍 SEO Meta Tags</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="adv-analytics">
+                        <label for="adv-analytics">📈 Google Analytics</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="adv-backend">
+                        <label for="adv-backend">⚙️ Backend/API</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="adv-multilang">
+                        <label for="adv-multilang">🌍 Mehrsprachig</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" id="generateBtn">Website Generieren</button>
         </form>
     </div>
 
-    <div class="result" id="resultPage">
-        <h2>Deine Website ist fertig!</h2>
+    <!-- Result Page -->
+    <div class="container result" id="resultPage">
+        <h2>Deine Website ist fertig! 🎉</h2>
+        
+        <div class="summary-card">
+            <h3>Zusammenfassung</h3>
+            <p id="summaryText"></p>
+            <div class="feature-list" id="featureList"></div>
+        </div>
         
         <div class="actions">
-            <button class="action-btn" id="previewBtn">👁 Preview</button>
+            <button class="action-btn" id="previewBtn">👁 Preview Öffnen</button>
             <button class="action-btn" id="downloadBtn">📥 ZIP Download</button>
         </div>
         
-        <button class="back-btn" id="backBtn">← Neue Website</button>
+        <button class="back-btn" id="backBtn">← Neue Website erstellen</button>
     </div>
 
+    <!-- Preview Modal -->
     <div class="modal" id="previewModal">
         <div class="modal-header">
-            <h3>Preview</h3>
+            <h3>Website Preview</h3>
             <button class="modal-close" id="closeModal">✕</button>
         </div>
         <iframe id="previewFrame"></iframe>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    
     <script>
+        // Paletten
+        const palettes = {
+            gold: { name: 'Gold', accent: '#c9a96e', bg: '#0c0c0c', text: '#f5f0e8' },
+            blue: { name: 'Ocean Blue', accent: '#4a9eff', bg: '#0a0a1a', text: '#e8e8f0' },
+            warm: { name: 'Warm Sand', accent: '#d4a574', bg: '#1a1512', text: '#f0e8e0' },
+            green: { name: 'Forest', accent: '#4ade80', bg: '#0a1a0a', text: '#e8f0e8' },
+            red: { name: 'Ruby', accent: '#ef4444', bg: '#1a0a0a', text: '#f0e8e8' }
+        };
+
+        // Palette Grid erstellen
+        function initPalettes() {
+            const grid = document.getElementById('paletteGrid');
+            Object.entries(palettes).forEach(([key, palette]) => {
+                const div = document.createElement('div');
+                div.className = 'palette-option' + (key === 'gold' ? ' active' : '');
+                div.innerHTML = `
+                    <div class="palette-preview" style="background: ${palette.accent};"></div>
+                    <div style="font-size: 0.8rem;">${palette.name}</div>
+                `;
+                div.onclick = () => {
+                    document.querySelectorAll('.palette-option').forEach(p => p.classList.remove('active'));
+                    div.classList.add('active');
+                    document.getElementById('selectedPalette').value = key;
+                };
+                grid.appendChild(div);
+            });
+        }
+
+        initPalettes();
+
         // Store generated HTML
         let generatedHTML = '';
         let companyName = '';
@@ -207,30 +648,97 @@
             
             const btn = document.getElementById('generateBtn');
             btn.disabled = true;
-            btn.textContent = 'Generiere...';
+            
+            // Show loading
+            document.getElementById('loadingScreen').classList.add('active');
+            
+            // Loading messages
+            const messages = [
+                'Design wird generiert...',
+                'Farben werden gemischt...',
+                'Sektionen werden gebaut...',
+                'Animationen werden hinzugefügt...',
+                'Content wird geschrieben...',
+                'Finaler Check...',
+                'Website ist fertig!'
+            ];
+            
+            let msgIndex = 0;
+            const msgInterval = setInterval(() => {
+                if (msgIndex < messages.length) {
+                    document.getElementById('loadingText').textContent = messages[msgIndex];
+                    msgIndex++;
+                }
+            }, 300);
             
             // Get values
             companyName = document.getElementById('companyName').value;
-            const description = document.getElementById('description').value;
-            const email = document.getElementById('email').value || 'info@example.com';
-            const style = document.getElementById('style').value;
+            const data = {
+                companyName,
+                slogan: document.getElementById('slogan').value,
+                description: document.getElementById('description').value,
+                industry: document.getElementById('industry').value,
+                style: document.getElementById('style').value,
+                palette: palettes[document.getElementById('selectedPalette').value],
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                location: document.getElementById('location').value,
+                website: document.getElementById('website').value,
+                linkedin: document.getElementById('linkedin').value,
+                features: {
+                    stats: document.getElementById('feat-stats').checked,
+                    testimonials: document.getElementById('feat-testimonials').checked,
+                    cases: document.getElementById('feat-cases').checked,
+                    team: document.getElementById('feat-team').checked,
+                    faq: document.getElementById('feat-faq').checked,
+                    blog: document.getElementById('feat-blog').checked,
+                    contact: document.getElementById('feat-contact').checked,
+                    newsletter: document.getElementById('feat-newsletter').checked,
+                    social: document.getElementById('feat-social').checked,
+                    legal: document.getElementById('feat-legal').checked,
+                    maps: document.getElementById('feat-maps').checked,
+                    cookies: document.getElementById('feat-cookies').checked
+                },
+                advanced: {
+                    seo: document.getElementById('adv-seo').checked,
+                    analytics: document.getElementById('adv-analytics').checked,
+                    backend: document.getElementById('adv-backend').checked,
+                    multilang: document.getElementById('adv-multilang').checked
+                }
+            };
             
             // Generate website
-            generatedHTML = generateWebsite({
-                companyName,
-                description,
-                email,
-                style
-            });
+            generatedHTML = generateWebsite(data);
             
-            // Show result
+            // Show result after delay
             setTimeout(() => {
+                clearInterval(msgInterval);
+                document.getElementById('loadingScreen').classList.remove('active');
+                
                 document.getElementById('formContainer').style.display = 'none';
                 document.getElementById('resultPage').classList.add('active');
                 
+                // Update summary
+                document.getElementById('summaryText').innerHTML = `
+                    <strong>${companyName}</strong><br>
+                    ${data.slogan || data.description.substring(0, 100) + '...'}<br><br>
+                    <span style="color: var(--text-muted);">Design: ${data.style} | Palette: ${data.palette.name}</span>
+                `;
+                
+                // Show features
+                const featureList = document.getElementById('featureList');
+                featureList.innerHTML = '';
+                Object.entries(data.features).forEach(([key, value]) => {
+                    if (value) {
+                        const tag = document.createElement('span');
+                        tag.className = 'feature-tag';
+                        tag.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+                        featureList.appendChild(tag);
+                    }
+                });
+                
                 btn.disabled = false;
-                btn.textContent = 'WEBSITE GENERIEREN';
-            }, 1500);
+            }, 2500);
         });
 
         // Preview
@@ -255,7 +763,25 @@
             
             const zip = new JSZip();
             zip.file('index.html', generatedHTML);
-            zip.file('README.md', `# ${companyName} Website\n\n## Setup\n1. Entpacke ZIP\n2. Öffne index.html im Browser\n3. Oder lade auf Webhost hoch\n\n## Hosting\n- GitHub Pages (kostenlos)\n- Vercel (kostenlos)\n- Netlify (kostenlos)`);
+            zip.file('README.md', `# ${companyName} Website
+
+## Deine Website ist fertig!
+
+### Setup
+1. Entpacke ZIP
+2. Öffne index.html im Browser
+3. Oder lade auf Webhost hoch
+
+### Hosting Optionen
+- **GitHub Pages**: Kostenlos, einfach
+- **Vercel**: Kostenlos, schnell
+- **Netlify**: Kostenlos, gut für Formulare
+
+### Features
+Siehe Website für alle Features.
+
+### Support
+Bei Fragen kontaktiere uns.`);
             
             zip.generateAsync({type: 'blob'}).then(content => {
                 const url = URL.createObjectURL(content);
@@ -279,24 +805,155 @@
 
         // Website Generator
         function generateWebsite(data) {
+            const p = data.palette;
             const isDark = data.style === 'dark';
-            const bg = isDark ? '#0c0c0c' : '#ffffff';
-            const text = isDark ? '#f5f0e8' : '#1a1a1a';
-            const accent = '#c9a96e';
+            const bg = isDark ? p.bg : '#ffffff';
+            const text = isDark ? p.text : '#1a1a1a';
+            const accent = p.accent;
+            const cardBg = isDark ? '#141414' : '#f5f5f5';
+            const border = isDark ? '#2a2a2a' : '#e0e0e0';
+            
+            // Feature sections
+            const sections = [];
+            
+            if (data.features.stats) {
+                sections.push(`
+                <section style="padding: 5rem 2rem; text-align: center;">
+                    <h2 style="font-size: 2rem; margin-bottom: 3rem;">Erfolge in Zahlen</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto;">
+                        ${[1,2,3,4].map(i => `
+                            <div style="padding: 2rem;">
+                                <div style="font-size: 3rem; font-weight: 700; color: ${accent}; margin-bottom: 0.5rem;">${[150, 98, 12, 24][i-1]}${i <= 2 ? '+' : ''}</div>
+                                <div style="color: ${isDark ? '#888' : '#666'};">${['Projekte', 'Zufriedenheit', 'Jahre Erfahrung', 'Team'][i-1]}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>`);
+            }
+            
+            if (data.features.testimonials) {
+                sections.push(`
+                <section style="padding: 5rem 2rem; background: ${cardBg};">
+                    <div style="max-width: 1000px; margin: 0 auto;">
+                        <h2 style="text-align: center; font-size: 2rem; margin-bottom: 3rem;">Kundenstimmen</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                            ${['Hervorragende Beratung!', 'Top Ergebnisse!', 'Sehr professionell.'].map((text, i) => `
+                                <div style="padding: 2rem; border: 1px solid ${border}; border-radius: 8px;">
+                                    <p style="font-style: italic; margin-bottom: 1rem;">"${text}"</p>
+                                    <div style="color: ${accent};">★★★★★</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </section>`);
+            }
+            
+            if (data.features.cases) {
+                sections.push(`
+                <section style="padding: 5rem 2rem;">
+                    <div style="max-width: 1000px; margin: 0 auto;">
+                        <h2 style="text-align: center; font-size: 2rem; margin-bottom: 3rem;">Case Studies</h2>
+                        <div style="display: grid; gap: 2rem;">
+                            ${['Strategieberatung', 'Digitalisierung'].map((title, i) => `
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; ${i % 2 === 1 ? 'direction: rtl;' : ''}">
+                                    <div style="${i % 2 === 1 ? 'direction: ltr;' : ''}">
+                                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">${title}</h3>
+                                        <p style="color: ${isDark ? '#888' : '#666'};">${data.description.substring(0, 80)}...</p>
+                                    </div>
+                                    <div style="background: ${border}; height: 200px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: ${isDark ? '#444' : '#999'};">
+                                        Projekt Visual
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </section>`);
+            }
+            
+            if (data.features.team) {
+                sections.push(`
+                <section style="padding: 5rem 2rem; background: ${cardBg};">
+                    <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+                        <h2 style="font-size: 2rem; margin-bottom: 3rem;">Unser Team</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+                            ${['CEO', 'Berater', 'Designer'].map((role, i) => `
+                                <div style="text-align: center;">
+                                    <div style="width: 100px; height: 100px; background: ${border}; border-radius: 50%; margin: 0 auto 1rem;"></div>
+                                    <h4>Team Mitglied ${i+1}</h4>
+                                    <p style="color: ${accent};">${role}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </section>`);
+            }
+            
+            if (data.features.faq) {
+                sections.push(`
+                <section style="padding: 5rem 2rem;">
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <h2 style="text-align: center; font-size: 2rem; margin-bottom: 3rem;">FAQ</h2>
+                        <div style="display: grid; gap: 1rem;">
+                            ${['Was macht ihr?', 'Wie erreiche ich euch?', 'Wo seid ihr?'].map((q, i) => `
+                                <div style="padding: 1.5rem; border: 1px solid ${border}; border-radius: 8px;">
+                                    <h4 style="margin-bottom: 0.5rem;">${q}</h4>
+                                    <p style="color: ${isDark ? '#888' : '#666'};">${data.description.substring(0, 60)}...</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </section>`);
+            }
+            
+            // Contact Section
+            if (data.features.contact) {
+                sections.push(`
+                <section id="contact" style="padding: 5rem 2rem; background: ${cardBg};">
+                    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                        <h2 style="font-size: 2rem; margin-bottom: 2rem;">Kontakt</h2>
+                        <p style="margin-bottom: 2rem;">${data.description.substring(0, 100)}</p>
+                        <div style="display: grid; gap: 1rem; justify-content: center;">
+                            ${data.email ? `<a href="mailto:${data.email}" style="color: ${accent}; text-decoration: none;">📧 ${data.email}</a>` : ''}
+                            ${data.phone ? `<p>📞 ${data.phone}</p>` : ''}
+                            ${data.location ? `<p>📍 ${data.location}</p>` : ''}
+                        </div>
+                    </div>
+                </section>`);
+            }
+            
+            // Cookie Banner
+            const cookieBanner = data.features.cookies ? `
+            <div id="cookieBanner" style="position: fixed; bottom: 0; left: 0; right: 0; background: ${cardBg}; border-top: 1px solid ${border}; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100;">
+                <p style="font-size: 0.9rem;">Wir verwenden Cookies für ein optimales Erlebnis. <a href="#" style="color: ${accent};">Mehr erfahren</a></p>
+                <button onclick="document.getElementById('cookieBanner').style.display='none'" style="background: ${accent}; color: ${isDark ? '#0c0c0c' : '#fff'}; border: none; padding: 0.5rem 1rem; cursor: pointer;">Akzeptieren</button>
+            </div>
+            ` : '';
             
             return `<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${data.companyName}</title>
+    <title>${data.companyName}${data.slogan ? ' | ' + data.slogan : ''}</title>
+    <meta name="description" content="${data.description.substring(0, 160)}">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: ${bg};
             color: ${text};
             line-height: 1.6;
+        }
+        a { color: ${accent}; text-decoration: none; }
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: ${bg}cc;
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 50;
+            border-bottom: 1px solid ${border};
         }
         .hero {
             min-height: 100vh;
@@ -306,66 +963,55 @@
             text-align: center;
             padding: 2rem;
         }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; opacity: 0.8; max-width: 600px; margin: 0 auto 2rem; }
         .btn {
             display: inline-block;
             padding: 1rem 2rem;
             background: ${accent};
-            color: ${isDark ? '#0c0c0c' : '#ffffff'};
+            color: ${isDark ? '#0c0c0c' : '#fff'};
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
+            transition: transform 0.3s;
         }
-        .section {
-            padding: 5rem 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .section h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        .section p {
-            opacity: 0.8;
-            line-height: 1.8;
-        }
-        .contact {
-            padding: 3rem 2rem;
-            text-align: center;
-            border-top: 1px solid ${isDark ? '#333' : '#eee'};
-        }
-        .contact a {
-            color: ${accent};
-            text-decoration: none;
+        .btn:hover { transform: translateY(-2px); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
+    <nav>
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <strong>${data.companyName}</strong>
+            <div style="display: flex; gap: 2rem;">
+                <a href="#about">Über</a>
+                <a href="#contact">Kontakt</a>
+            </div>
+        </div>
+    </nav>
+    
     <div class="hero">
         <div>
             <h1>${data.companyName}</h1>
-            <p>${data.description}</p>
+            <p>${data.slogan || data.description}</p>
             <a href="#contact" class="btn">Kontakt</a>
         </div>
     </div>
     
-    <div class="section">
+    <section id="about" style="padding: 5rem 2rem; max-width: 800px; margin: 0 auto;">
         <h2>Über uns</h2>
-        <p>${data.description} Wir bringen langjährige Erfahrung und innovative Lösungen für unsere Kunden.</p>
-    </div>
+        <p style="margin-top: 1rem;">${data.description}</p>
+    </section>
     
-    <div class="contact" id="contact">
-        <h2>Kontakt</h2>
-        <p><a href="mailto:${data.email}">${data.email}</a></p>
-    </div>
+    ${sections.join('')}
+    
+    <footer style="padding: 2rem; text-align: center; border-top: 1px solid ${border}; color: ${isDark ? '#666' : '#999'};">
+        <p>&copy; ${new Date().getFullYear()} ${data.companyName}. Alle Rechte vorbehalten.</p>
+        ${data.features.legal ? '<p><a href="#">Impressum</a> | <a href="#">Datenschutz</a></p>' : ''}
+    </footer>
+    
+    ${cookieBanner}
 </body>
 </html>`;
         }
