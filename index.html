@@ -3,1651 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI Website Generator - Professionelle Websites in Minuten">
-    <meta name="theme-color" content="#0c0c0c">
-    <title>AI Website Generator | Professionelle Websites in Minuten</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>AI Website Generator</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --bg-primary: #0c0c0c;
-            --bg-secondary: #111111;
-            --bg-card: #141414;
-            --bg-input: #1a1a1a;
-            --text-primary: #f5f0e8;
-            --text-secondary: #a8a29e;
-            --text-muted: #6b6560;
-            --accent: #c9a96e;
-            --accent-hover: #d4b87a;
-            --border: rgba(245,240,232,0.08);
-            --border-hover: rgba(245,240,232,0.15);
-            --success: #4ade80;
-            --error: #ef4444;
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        html {
-            scroll-behavior: smooth;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0c0c0c;
+            color: #f5f0e8;
             line-height: 1.6;
-            overflow-x: hidden;
-            font-weight: 300;
             min-height: 100vh;
         }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 300;
-            letter-spacing: -0.02em;
-        }
-
-        /* ========== NAVIGATION ========== */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            padding: 1.5rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(12,12,12,0.9);
-            backdrop-filter: blur(30px) saturate(180%);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            letter-spacing: 0.5px;
-        }
-
-        .logo span { color: var(--accent); font-style: italic; }
-
-        /* ========== HERO ========== */
-        .hero {
-            min-height: 40vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding-top: 80px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            right: -50%; bottom: -50%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            opacity: 0.02;
-            animation: grain 6s steps(8) infinite;
-            pointer-events: none;
-        }
-
-        @keyframes grain {
-            0%, 100% { transform: translate(0, 0); }
-            10% { transform: translate(-4%, -3%); }
-            30% { transform: translate(2%, -1%); }
-            50% { transform: translate(-2%, 3%); }
-            70% { transform: translate(3%, -2%); }
-            90% { transform: translate(-1%, 2%); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 700px;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
             padding: 2rem;
         }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            line-height: 1.1;
-            margin-bottom: 1rem;
-        }
-
-        .hero h1 em { font-style: italic; color: var(--accent); }
-
-        .hero p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        /* ========== FORM SECTION ========== */
-        .generator-section {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem 3rem 6rem;
-        }
-
-        .form-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .form-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 3px;
-            background: linear-gradient(90deg, var(--accent), transparent);
-        }
-
-        .form-group {
+        h1 {
+            text-align: center;
             margin-bottom: 2rem;
+            font-size: 2rem;
         }
-
-        .form-group label {
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
             display: block;
-            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+            color: #c9a96e;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--accent);
-            margin-bottom: 0.75rem;
-            font-weight: 500;
+            letter-spacing: 1px;
         }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        input, textarea, select {
             width: 100%;
-            padding: 1rem 1.25rem;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            font-family: 'DM Sans', sans-serif;
+            padding: 0.75rem;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
             font-size: 1rem;
-            font-weight: 300;
-            transition: all 0.4s var(--ease-out-expo);
-            outline: none;
         }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            border-color: var(--accent);
-            background: rgba(201,169,110,0.03);
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-group textarea {
-            min-height: 120px;
+        textarea {
+            min-height: 100px;
             resize: vertical;
         }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        /* Radio/Checkbox styling */
-        .radio-group {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .radio-option {
-            flex: 1;
-            min-width: 140px;
-        }
-
-        .radio-option input {
-            display: none;
-        }
-
-        .radio-option label {
-            display: block;
-            padding: 1rem;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            transition: all 0.4s var(--ease-out-expo);
-            text-transform: none;
-            letter-spacing: 0;
-        }
-
-        .radio-option input:checked + label {
-            border-color: var(--accent);
-            background: rgba(201,169,110,0.08);
-            color: var(--accent);
-        }
-
-        .radio-option label:hover {
-            border-color: var(--border-hover);
-        }
-
-        /* Color palette preview */
-        .palette-preview {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .palette-color {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-
-        .palette-color:hover {
-            transform: scale(1.1);
-        }
-
-        .palette-color.active {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(201,169,110,0.2);
-        }
-
-        /* Generate Button */
-        .generate-btn {
+        .btn {
             width: 100%;
-            padding: 1.25rem;
-            background: var(--accent);
-            color: var(--bg-primary);
+            padding: 1rem;
+            background: #c9a96e;
+            color: #0c0c0c;
             border: none;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-weight: 500;
+            font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.4s var(--ease-out-expo);
-            position: relative;
-            overflow: hidden;
+            transition: background 0.3s;
         }
-
-        .generate-btn:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(201,169,110,0.2);
+        .btn:hover {
+            background: #d4b87a;
         }
-
-        .generate-btn:disabled {
+        .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
-
-        .generate-btn .loading {
+        .result {
             display: none;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: #141414;
+            border: 1px solid #333;
         }
-
-        .generate-btn.generating .default {
-            display: none;
-        }
-
-        .generate-btn.generating .loading {
-            display: inline;
-        }
-
-        /* ========== RESULT PAGE ========== */
-        .result-page {
-            display: none;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 10rem 3rem 6rem;
-        }
-        .result-page.active {
+        .result.active {
             display: block;
-            animation: fadeInUp 0.8s var(--ease-out-expo);
         }
-        .result-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-        .result-header h2 {
-            font-size: 2.5rem;
+        .result h2 {
             margin-bottom: 1rem;
+            text-align: center;
         }
-        .result-header h2 em {
-            font-style: italic;
-            color: var(--accent);
-        }
-        .result-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-        .result-options {
+        .actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 4rem;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
-        .result-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 3rem;
-            text-align: center;
-            transition: all 0.5s var(--ease-out-expo);
-        }
-        .result-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-5px);
-        }
-        .result-icon {
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-        }
-        .result-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-        }
-        .result-card p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
-        .result-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            border: 1px solid var(--accent);
-            color: var(--accent);
+        .action-btn {
+            padding: 1rem;
             background: transparent;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.4s var(--ease-out-expo);
-        }
-        .result-btn:hover {
-            background: var(--accent);
-            color: var(--bg-primary);
-        }
-        .result-btn.primary {
-            background: var(--accent);
-            color: var(--bg-primary);
-        }
-        .result-btn.primary:hover {
-            background: var(--accent-hover);
-        }
-        .result-footer {
+            border: 1px solid #c9a96e;
+            color: #c9a96e;
             text-align: center;
-        }
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            background: transparent;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
             cursor: pointer;
-            transition: all 0.4s var(--ease-out-expo);
+            transition: all 0.3s;
         }
-        .back-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
+        .action-btn:hover {
+            background: #c9a96e;
+            color: #0c0c0c;
         }
-        
-        /* Preview Modal */
-        .preview-modal {
+        .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            padding: 2rem;
         }
-        .preview-modal.active {
-            display: flex;
-        }
-        .preview-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
-        }
-        .preview-container {
-            position: relative;
-            width: 90vw;
-            height: 85vh;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
+        .modal.active {
             display: flex;
             flex-direction: column;
-            z-index: 2001;
         }
-        .preview-toolbar {
+        .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
         }
-        .preview-toolbar h4 {
-            font-size: 1rem;
-            font-weight: 400;
-        }
-        .preview-close {
+        .modal-close {
             background: none;
             border: none;
-            color: var(--text-secondary);
+            color: #fff;
+            font-size: 1.5rem;
             cursor: pointer;
-            padding: 0.5rem;
-            transition: color 0.3s ease;
         }
-        .preview-close:hover {
-            color: var(--text-primary);
-        }
-        .preview-container iframe {
+        .modal iframe {
             flex: 1;
             width: 100%;
             border: none;
-        }
-
-        /* ========== PREVIEW SECTION ========== */
-        .preview-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 3rem;
-            display: none;
-        }
-
-        .preview-section.active {
-            display: block;
-            animation: fadeInUp 0.8s var(--ease-out-expo);
-        }
-
-        .preview-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .preview-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .preview-header p {
-            color: var(--text-secondary);
-        }
-
-        .preview-frame {
-            width: 100%;
-            height: 600px;
-            border: 1px solid var(--border);
-            background: var(--bg-card);
-            position: relative;
-        }
-
-        .preview-frame iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .download-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .download-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 2.5rem;
-            text-align: center;
-            transition: all 0.4s var(--ease-out-expo);
-        }
-
-        .download-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-5px);
-        }
-
-        .download-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-        }
-
-        .download-card p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
-
-        /* ========== RESULT PAGE ========== */
-        .result-page {
-            display: none;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 10rem 3rem 6rem;
-            animation: fadeInUp 0.8s var(--ease-out-expo);
-        }
-        .result-page.active {
-            display: block;
-        }
-        .result-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-        .result-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        .result-header h2 em {
-            font-style: italic;
-            color: var(--accent);
-        }
-        .result-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-        .result-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-        .result-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 3rem;
-            text-align: center;
-            transition: all 0.5s var(--ease-out-expo);
-        }
-        .result-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-5px);
-        }
-        .result-icon {
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-        }
-        .result-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-        }
-        .result-card p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
-        .result-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            background: transparent;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.4s var(--ease-out-expo);
-        }
-        .result-btn:hover {
-            background: var(--accent);
-            color: var(--bg-primary);
-        }
-        .result-btn.primary {
-            background: var(--accent);
-            color: var(--bg-primary);
-        }
-        .result-btn.primary:hover {
-            background: var(--accent-hover);
-        }
-        .result-footer {
-            text-align: center;
+            background: #fff;
         }
         .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
+            display: block;
+            margin: 2rem auto 0;
+            padding: 0.75rem 1.5rem;
             background: transparent;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            border: 1px solid #333;
+            color: #888;
             cursor: pointer;
-            transition: all 0.4s var(--ease-out-expo);
         }
         .back-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        
-        /* Preview Modal */
-        .preview-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-        .preview-modal.active {
-            display: flex;
-        }
-        .preview-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
-        }
-        .preview-container {
-            position: relative;
-            width: 90vw;
-            height: 85vh;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            z-index: 2001;
-        }
-        .preview-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-        .preview-toolbar h4 {
-            font-size: 1rem;
-            font-weight: 400;
-        }
-        .preview-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 0.5rem;
-            transition: color 0.3s ease;
-        }
-        .preview-close:hover {
-            color: var(--text-primary);
-        }
-        .preview-container iframe {
-            flex: 1;
-            width: 100%;
-            border: none;
-        }
-
-        /* Hide generator when result shown */
-        .generator-section.hidden {
-            display: none;
-        }
-
-        .download-btn:hover {
-            background: var(--accent);
-            color: var(--bg-primary);
-        }
-
-        /* ========== FOOTER ========== */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 3rem;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 768px) {
-            .form-row { grid-template-columns: 1fr; }
-            .download-options { grid-template-columns: 1fr; }
-            .generator-section { padding: 2rem 1.5rem 4rem; }
-            .form-card { padding: 2rem; }
-            nav { padding: 1.25rem 1.5rem; }
+            border-color: #c9a96e;
+            color: #c9a96e;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <a href="#" class="logo">AI <span>Website Generator</span></a>
-    </nav>
-
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Generiere deine <em>professionelle</em> Website</h1>
-            <p>Beschreibe dein Projekt, wähle einen Stil und erhalte eine fertige Website in Minuten.</p>
-        </div>
-    </section>
-
-    <!-- Generator Form -->
-    <section class="generator-section">
-        <div class="form-card">
-            <form id="websiteForm">
-                <!-- Basic Info -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="companyName">Firmenname</label>
-                        <input type="text" id="companyName" name="companyName" placeholder="z.B. Tono Consulting GmbH" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="industry">Branche</label>
-                        <select id="industry" name="industry" required>
-                            <option value="">Branche wählen...</option>
-                            <option value="consulting">Beratung / Consulting</option>
-                            <option value="tech">Technologie / IT</option>
-                            <option value="finance">Finanzen / Banking</option>
-                            <option value="creative">Kreativ / Design</option>
-                            <option value="healthcare">Gesundheit / Medizin</option>
-                            <option value="retail">Handel / E-Commerce</option>
-                            <option value="other">Andere</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Beschreibung</label>
-                    <textarea id="description" name="description" placeholder="Beschreibe was dein Unternehmen macht, eure Zielgruppe und was die Website vermitteln soll..." required></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="tagline">Tagline / Slogan</label>
-                        <input type="text" id="tagline" name="tagline" placeholder="z.B. Strategische IT-Beratung für die digitale Zukunft">
-                    </div>
-                    <div class="form-group">
-                        <label for="location">Standort</label>
-                        <input type="text" id="location" name="location" placeholder="z.B. Düsseldorf, NRW">
-                    </div>
-                </div>
-
-                <!-- Style Selection -->
-                <div class="form-group">
-                    <label>Design-Stil</label>
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" name="style" id="style-dark" value="dark" checked>
-                            <label for="style-dark">Dark Luxury</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="style" id="style-light" value="light">
-                            <label for="style-light">Light Minimal</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="style" id="style-bold" value="bold">
-                            <label for="style-bold">Bold Creative</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Color Palette -->
-                <div class="form-group">
-                    <label>Farb-Palette</label>
-                    <div class="palette-preview" id="palettePreview">
-                        <div class="palette-color active" data-palette="gold" style="background: #c9a96e;" title="Dark Gold"></div>
-                        <div class="palette-color" data-palette="blue" style="background: #4a9eff;" title="Dark Blue"></div>
-                        <div class="palette-color" data-palette="warm" style="background: #d4a574;" title="Warm Dark"></div>
-                        <div class="palette-color" data-palette="green" style="background: #6b8f71;" title="Forest"></div>
-                        <div class="palette-color" data-palette="red" style="background: #c97575;" title="Ruby"></div>
-                    </div>
-                    <input type="hidden" id="selectedPalette" name="palette" value="gold">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="email">Kontakt E-Mail</label>
-                        <input type="email" id="email" name="email" placeholder="info@beispiel.de">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Telefon (optional)</label>
-                        <input type="tel" id="phone" name="phone" placeholder="+49 211 12345678">
-                    </div>
-                </div>
-
-                <!-- Features -->
-                <div class="form-group">
-                    <label>Zusätzliche Features</label>
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="checkbox" id="feature-stats" name="features" value="stats" style="display: none;">
-                            <label for="feature-stats" onclick="toggleCheckbox(this)" style="cursor: pointer;">Statistiken</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="checkbox" id="feature-testimonials" name="features" value="testimonials" style="display: none;">
-                            <label for="feature-testimonials" onclick="toggleCheckbox(this)" style="cursor: pointer;">Testimonials</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="checkbox" id="feature-cases" name="features" value="cases" style="display: none;">
-                            <label for="feature-cases" onclick="toggleCheckbox(this)" style="cursor: pointer;">Case Studies</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="checkbox" id="feature-team" name="features" value="team" style="display: none;">
-                            <label for="feature-team" onclick="toggleCheckbox(this)" style="cursor: pointer;">Team</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Backend Option -->
-                <div class="form-group">
-                    <label>Backend benötigt?</label>
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" name="backend" id="backend-no" value="no" checked>
-                            <label for="backend-no">Nein - Statisch</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="backend" id="backend-yes" value="yes">
-                            <label for="backend-yes">Ja - API + DB</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="notes">Zusätzliche Anmerkungen (optional)</label>
-                    <textarea id="notes" name="notes" placeholder="Besondere Wünsche, spezifische Anforderungen, Beispiel-Websites die dir gefallen..."></textarea>
-                </div>
-
-                <button type="submit" class="generate-btn" id="generateBtn">
-                    <span class="default">Website generieren</span>
-                    <span class="loading">Generiere... ⏳</span>
-                </button>
-            </form>
-        </div>
-    </section>
-
-    <!-- Result Page (separate view) -->
-    <div class="result-page" id="resultPage">
-        <div class="result-header">
-            <h2>Deine <em>Website</em> ist fertig</h2>
-            <p class="result-subtitle">Wähle wie du fortfahren möchtest</p>
-        </div>
+    <div class="container" id="formContainer">
+        <h1>AI Website Generator</h1>
         
-        <div class="result-options">
-            <!-- Preview Option -->
-            <div class="result-card">
-                <div class="result-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                </div>
-                <h3>Live Preview</h3>
-                <p>Anschauen im Browser</p>
-                <button class="result-btn primary" id="previewBtn">
-                    Preview öffnen
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
-                    </svg>
-                </button>
+        <form id="generatorForm">
+            <div class="form-group">
+                <label>Firmenname</label>
+                <input type="text" id="companyName" placeholder="Mein Unternehmen" required>
             </div>
             
-            <!-- Download Option -->
-            <div class="result-card">
-                <div class="result-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                </div>
-                <h3>ZIP Download</h3>
-                <p>Für eigenes Hosting</p>
-                <button class="result-btn" id="downloadBtn">
-                    ZIP herunterladen
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                    </svg>
-                </button>
+            <div class="form-group">
+                <label>Beschreibung</label>
+                <textarea id="description" placeholder="Was macht dein Unternehmen?" required></textarea>
             </div>
-        </div>
-        
-        <!-- Preview Modal -->
-        <div class="preview-modal" id="previewModal">
-            <div class="preview-overlay" id="previewOverlay"></div>
-            <div class="preview-container">
-                <div class="preview-toolbar">
-                    <h4>Website Preview</h4>
-                    <button class="preview-close" id="previewClose">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18"/>
-                            <line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                    </button>
-                </div>
-                <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin"></iframe>
+            
+            <div class="form-group">
+                <label>E-Mail</label>
+                <input type="email" id="email" placeholder="info@beispiel.de">
             </div>
-        </div>
-        
-        <!-- Back to Generator -->
-        <div class="result-footer">
-            <button class="back-btn" id="backBtn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-                Neue Website erstellen
-            </button>
-        </div>
+            
+            <div class="form-group">
+                <label>Design-Stil</label>
+                <select id="style">
+                    <option value="dark">Dark Luxury</option>
+                    <option value="light">Light Minimal</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn" id="generateBtn">WEBSITE GENERIEREN</button>
+        </form>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>AI Website Generator — Professionelle Websites in Minuten</p>
-    </footer>
+    <div class="result" id="resultPage">
+        <h2>Deine Website ist fertig!</h2>
+        
+        <div class="actions">
+            <button class="action-btn" id="previewBtn">👁 Preview</button>
+            <button class="action-btn" id="downloadBtn">📥 ZIP Download</button>
+        </div>
+        
+        <button class="back-btn" id="backBtn">← Neue Website</button>
+    </div>
 
+    <div class="modal" id="previewModal">
+        <div class="modal-header">
+            <h3>Preview</h3>
+            <button class="modal-close" id="closeModal">✕</button>
+        </div>
+        <iframe id="previewFrame"></iframe>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
     <script>
-        // Color palette selection
-        document.querySelectorAll('.palette-color').forEach(color => {
-            color.addEventListener('click', () => {
-                document.querySelectorAll('.palette-color').forEach(c => c.classList.remove('active'));
-                color.classList.add('active');
-                document.getElementById('selectedPalette').value = color.dataset.palette;
-            });
-        });
-
-        // Toggle checkbox styling
-        function toggleCheckbox(label) {
-            const checkbox = document.getElementById(label.getAttribute('for'));
-            checkbox.checked = !checkbox.checked;
-            if (checkbox.checked) {
-                label.style.borderColor = 'var(--accent)';
-                label.style.background = 'rgba(201,169,110,0.08)';
-                label.style.color = 'var(--accent)';
-            } else {
-                label.style.borderColor = 'var(--border)';
-                label.style.background = 'var(--bg-input)';
-                label.style.color = 'var(--text-secondary)';
-            }
-        }
+        // Store generated HTML
+        let generatedHTML = '';
+        let companyName = '';
 
         // Form submission
-        document.getElementById('websiteForm').addEventListener('submit', async (e) => {
+        document.getElementById('generatorForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
+            
             const btn = document.getElementById('generateBtn');
-            btn.classList.add('generating');
             btn.disabled = true;
-
-            // Collect form data
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-
-            // Get checked features
-            const features = [];
-            document.querySelectorAll('input[name="features"]:checked').forEach(cb => {
-                features.push(cb.value);
+            btn.textContent = 'Generiere...';
+            
+            // Get values
+            companyName = document.getElementById('companyName').value;
+            const description = document.getElementById('description').value;
+            const email = document.getElementById('email').value || 'info@example.com';
+            const style = document.getElementById('style').value;
+            
+            // Generate website
+            generatedHTML = generateWebsite({
+                companyName,
+                description,
+                email,
+                style
             });
-            data.features = features;
-
-            // Get palette
-            data.palette = document.getElementById('selectedPalette').value;
-
-            console.log('Generating website with data:', data);
-
-            // Simulate generation (in real implementation, this would call an API)
+            
+            // Show result
             setTimeout(() => {
-                // Generate the website HTML
-                const generatedHTML = generateWebsite(data);
-
-                // Store for later use
-                window.generatedWebsiteHTML = generatedHTML;
-                window.generatedCompanyName = data.companyName || 'website';
-
-                // Hide form, show result page
-                document.querySelector('.generator-section').style.display = 'none';
-                const resultPage = document.getElementById('resultPage');
-                resultPage.classList.add('active');
-
-                // Scroll to top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                btn.classList.remove('generating');
+                document.getElementById('formContainer').style.display = 'none';
+                document.getElementById('resultPage').classList.add('active');
+                
                 btn.disabled = false;
-            }, 2000);
+                btn.textContent = 'WEBSITE GENERIEREN';
+            }, 1500);
+        });
+
+        // Preview
+        document.getElementById('previewBtn').addEventListener('click', () => {
+            const modal = document.getElementById('previewModal');
+            const frame = document.getElementById('previewFrame');
+            frame.srcdoc = generatedHTML;
+            modal.classList.add('active');
+        });
+
+        // Close modal
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('previewModal').classList.remove('active');
         });
 
         // Download ZIP
         document.getElementById('downloadBtn').addEventListener('click', () => {
-            const html = window.generatedWebsiteHTML;
-            const filename = window.generatedCompanyName || 'website';
-            if (html) {
-                downloadZIP(html, filename);
-            } else {
-                alert('Bitte generiere zuerst eine Website!');
+            if (!generatedHTML) {
+                alert('Generiere zuerst eine Website!');
+                return;
             }
-        });
-
-        // Preview button opens modal
-        document.getElementById('previewBtn').addEventListener('click', () => {
-            const html = window.generatedWebsiteHTML;
-            if (html) {
-                const modal = document.getElementById('previewModal');
-                const frame = document.getElementById('previewFrame');
-                frame.srcdoc = html;
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        });
-
-        // Close modal
-        document.getElementById('previewClose').addEventListener('click', closePreview);
-        document.getElementById('previewOverlay').addEventListener('click', closePreview);
-
-        function closePreview() {
-            const modal = document.getElementById('previewModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        // Back button - reset and show form again
-        document.getElementById('backBtn').addEventListener('click', () => {
-            document.getElementById('resultPage').classList.remove('active');
-            document.querySelector('.generator-section').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            // Reset form
-            document.getElementById('websiteForm').reset();
-            document.querySelectorAll('.palette-color').forEach(c => c.classList.remove('active'));
-            document.querySelector('.palette-color[data-palette="gold"]').classList.add('active');
-            document.getElementById('selectedPalette').value = 'gold';
-        });
-
-        // Website generator function
-        function generateWebsite(data) {
-            const palettes = {
-                gold: { accent: '#c9a96e', accentHover: '#d4b87a' },
-                blue: { accent: '#4a9eff', accentHover: '#6bb3ff' },
-                warm: { accent: '#d4a574', accentHover: '#e0b888' },
-                green: { accent: '#6b8f71', accentHover: '#7da382' },
-                red: { accent: '#c97575', accentHover: '#d48a8a' }
-            };
-
-            const palette = palettes[data.palette] || palettes.gold;
-            const company = data.companyName || 'Mein Unternehmen';
-            const tagline = data.tagline || 'Professionelle Dienstleistungen';
-            const description = data.description || '';
-            const location = data.location || '';
-            const email = data.email || 'info@example.com';
-            const hasStats = data.features?.includes('stats');
-            const hasTestimonials = data.features?.includes('testimonials');
-            const hasCases = data.features?.includes('cases');
-            const hasTeam = data.features?.includes('team');
-
-            // Generate sections based on features
-            let sections = '';
-
-            // Hero
-            sections += `
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-label">${tagline}</div>
-            <h1>
-                Wir bringen
-                <em>Ihre Vision</em>
-                zum Leben
-            </h1>
-            <p class="hero-subtitle">${description.substring(0, 200)}${description.length > 200 ? '...' : ''}</p>
-            <a href="#kontakt" class="hero-cta">
-                Kontakt aufnehmen
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-            </a>
-        </div>
-    </section>`;
-
-            // Stats
-            if (hasStats) {
-                sections += `
-    <section class="stats-section">
-        <div class="stats-container">
-            <div class="stats-grid reveal">
-                <div class="stat-item">
-                    <h3>50+</h3>
-                    <p>Erfolgreiche Projekte</p>
-                </div>
-                <div class="stat-item">
-                    <h3>98%</h3>
-                    <p>Kundenzufriedenheit</p>
-                </div>
-                <div class="stat-item">
-                    <h3>15+</h3>
-                    <p>Jahre Erfahrung</p>
-                </div>
-                <div class="stat-item">
-                    <h3>30%</h3>
-                    <p>Effizienzsteigerung</p>
-                </div>
-            </div>
-        </div>
-    </section>`;
-            }
-
-            // Case Studies
-            if (hasCases) {
-                sections += `
-    <section id="projekte" class="case-studies-section">
-        <div class="section-header reveal">
-            <span class="section-label">Projekte</span>
-            <h2 class="section-title">Ergebnisse, die <em>überzeugen</em></h2>
-        </div>
-        <div class="case-study-card reveal">
-            <div class="case-study-image">
-                <span class="placeholder-text">Projekt Visual</span>
-            </div>
-            <div class="case-study-content">
-                <span class="tag">Erfolgsstory</span>
-                <h3>Transformationsprojekt</h3>
-                <p>Durch unsere Beratung konnte das Unternehmen seine Effizienz steigern und Kosten senken.</p>
-                <div class="case-study-stats">
-                    <div class="case-study-stat">
-                        <h4>+40%</h4>
-                        <p>Effizienz</p>
-                    </div>
-                    <div class="case-study-stat">
-                        <h4>-30%</h4>
-                        <p>Kosten</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>`;
-            }
-
-            // Testimonials
-            if (hasTestimonials) {
-                sections += `
-    <section class="testimonials-section">
-        <div class="section-header reveal">
-            <span class="section-label">Stimmen</span>
-            <h2 class="section-title">Was unsere <em>Kunden</em> sagen</h2>
-        </div>
-        <div class="testimonial-grid">
-            <div class="testimonial-card reveal">
-                <p class="quote">"Exzellente Beratung und professionelle Umsetzung. Die Ergebnisse haben unsere Erwartungen übertroffen."</p>
-                <div class="testimonial-author">
-                    <div class="testimonial-avatar">M</div>
-                    <div class="testimonial-author-info">
-                        <h4>Max Mustermann</h4>
-                        <p>Geschäftsführer</p>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card reveal reveal-delay-1">
-                <p class="quote">"Die Zusammenarbeit war erstklassig. Innovative Lösungen und pragmatische Umsetzung."</p>
-                <div class="testimonial-author">
-                    <div class="testimonial-avatar">S</div>
-                    <div class="testimonial-author-info">
-                        <h4>Sarah Schmidt</h4>
-                        <p>IT-Direktorin</p>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card reveal reveal-delay-2">
-                <p class="quote">"Kompetente Beratung, die wirklich versteht was mittelständische Unternehmen brauchen."</p>
-                <div class="testimonial-author">
-                    <div class="testimonial-avatar">T</div>
-                    <div class="testimonial-author-info">
-                        <h4>Thomas Weber</h4>
-                        <p>CIO</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>`;
-            }
-
-            // About
-            sections += `
-    <section id="ueber-uns" class="about-section">
-        <div class="section-header reveal">
-            <span class="section-label">Über uns</span>
-            <h2 class="section-title"><em>Exzellenz</em> in jeder Beratung</h2>
-        </div>
-        <div class="about-content">
-            <div class="about-text reveal">
-                <p class="lead">${description || `${company} steht für professionelle Beratung und innovative Lösungen.`}</p>
-                <p>Wir verstehen die Herausforderungen moderner Unternehmen und entwickeln maßgeschneiderte Strategien für nachhaltigen Erfolg.</p>
-                ${location ? `<p><strong>Standort:</strong> ${location}</p>` : ''}
-            </div>
-            <div class="about-text reveal reveal-delay-2">
-                <p>Unser Team bringt umfassende Erfahrung und tiefgreifendes Know-how in digitale Transformation ein.</p>
-                <p>Von der Strategieentwicklung bis zur Implementierung begleiten wir Sie durch den gesamten Prozess.</p>
-            </div>
-        </div>
-    </section>`;
-
-            // Contact
-            sections += `
-    <section id="kontakt" class="contact-section">
-        <div class="section-header reveal">
-            <span class="section-label">Kontakt</span>
-            <h2 class="section-title">Lassen Sie uns <em>sprechen</em></h2>
-        </div>
-        <div class="contact-grid reveal">
-            <div class="contact-item">
-                <h3>E-Mail</h3>
-                <a href="mailto:${email}">${email}</a>
-            </div>
-            <div class="contact-item">
-                <h3>Standort</h3>
-                <a href="#">${location || 'Deutschland'}</a>
-            </div>
-            <div class="contact-item">
-                <h3>Telefon</h3>
-                <a href="tel:${data.phone || '#'}">${data.phone || 'Auf Anfrage'}</a>
-            </div>
-            <div class="contact-item">
-                <h3>Termin</h3>
-                <a href="#">Beratungstermin buchen</a>
-            </div>
-        </div>
-    </section>`;
-
-            return `<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="${description.substring(0, 160)}">
-    <meta name="theme-color" content="#0c0c0c">
-    <title>${company} | ${tagline}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg-primary: #0c0c0c;
-            --bg-secondary: #111111;
-            --bg-card: #141414;
-            --text-primary: #f5f0e8;
-            --text-secondary: #a8a29e;
-            --text-muted: #6b6560;
-            --accent: ${palette.accent};
-            --accent-hover: ${palette.accentHover};
-            --border: rgba(245,240,232,0.08);
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            font-weight: 300;
-        }
-        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 300; letter-spacing: -0.02em; }
-
-        /* Navigation */
-        nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            padding: 1.5rem 3rem;
-            display: flex; justify-content: space-between; align-items: center;
-            transition: all 0.6s var(--ease-out-expo);
-        }
-        nav.scrolled {
-            background: rgba(12,12,12,0.9);
-            backdrop-filter: blur(30px) saturate(180%);
-            border-bottom: 1px solid var(--border);
-            padding: 1.25rem 3rem;
-        }
-        .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--text-primary); text-decoration: none; }
-        .logo span { color: var(--accent); font-style: italic; }
-        .nav-links { display: flex; gap: 3rem; list-style: none; }
-        .nav-links a {
-            color: var(--text-secondary); text-decoration: none; font-size: 0.75rem;
-            text-transform: uppercase; letter-spacing: 3px;
-            transition: all 0.5s var(--ease-out-expo); position: relative;
-        }
-        .nav-links a::before {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
-            background: var(--accent); transition: width 0.5s var(--ease-out-expo);
-        }
-        .nav-links a:hover { color: var(--text-primary); }
-        .nav-links a:hover::before { width: 100%; }
-
-        /* Hero */
-        .hero {
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
-            text-align: center; position: relative; overflow: hidden;
-        }
-        .hero::before {
-            content: ''; position: absolute; top: -50%; left: -50%; right: -50%; bottom: -50%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            opacity: 0.02; animation: grain 6s steps(8) infinite; pointer-events: none;
-        }
-        @keyframes grain {
-            0%, 100% { transform: translate(0, 0); } 10% { transform: translate(-4%, -3%); }
-            30% { transform: translate(2%, -1%); } 50% { transform: translate(-2%, 3%); }
-            70% { transform: translate(3%, -2%); } 90% { transform: translate(-1%, 2%); }
-        }
-        .hero-content { position: relative; z-index: 1; max-width: 900px; padding: 2rem; }
-        .hero-label {
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 6px;
-            color: var(--accent); margin-bottom: 2.5rem; font-weight: 400;
-        }
-        .hero h1 {
-            font-size: clamp(2.8rem, 6vw, 5rem); line-height: 1.05;
-            margin-bottom: 1.5rem; font-weight: 300;
-        }
-        .hero h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
-        .hero-subtitle {
-            font-size: 1.1rem; color: var(--text-secondary); max-width: 550px;
-            margin: 0 auto 3rem; line-height: 1.8; font-weight: 300; letter-spacing: 0.3px;
-        }
-        .hero-cta {
-            display: inline-flex; align-items: center; gap: 1rem;
-            padding: 1.1rem 2.8rem; border: 1px solid rgba(201,169,110,0.4);
-            color: var(--accent); text-decoration: none; font-size: 0.75rem;
-            text-transform: uppercase; letter-spacing: 3px;
-            transition: all 0.6s var(--ease-out-expo); position: relative; overflow: hidden;
-            background: transparent;
-        }
-        .hero-cta::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: var(--accent); transition: left 0.6s var(--ease-out-expo); z-index: -1;
-        }
-        .hero-cta:hover::before { left: 0; }
-        .hero-cta:hover { color: var(--bg-primary); border-color: var(--accent); }
-
-        /* Sections */
-        section { padding: 8rem 3rem; max-width: 1200px; margin: 0 auto; }
-        .section-header { margin-bottom: 5rem; }
-        .section-label {
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 5px;
-            color: var(--accent); margin-bottom: 1.5rem; display: block; font-weight: 400;
-        }
-        .section-title {
-            font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.15;
-            max-width: 800px; font-weight: 300;
-        }
-        .section-title em { font-style: italic; color: var(--accent); }
-
-        /* Stats */
-        .stats-section {
-            padding: 6rem 3rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-            background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary), var(--bg-primary));
-        }
-        .stats-container { max-width: 1200px; margin: 0 auto; }
-        .stats-grid { display: flex; justify-content: space-between; align-items: center; }
-        .stat-item { text-align: center; position: relative; }
-        .stat-item:not(:last-child)::after {
-            content: ''; position: absolute; right: -50%; top: 50%; transform: translateY(-50%);
-            width: 1px; height: 50px; background: var(--border);
-        }
-        .stat-item h3 {
-            font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 4rem);
-            color: var(--accent); margin-bottom: 0.5rem; line-height: 1; font-weight: 300;
-        }
-        .stat-item p {
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px;
-            color: var(--text-muted); font-weight: 400;
-        }
-
-        /* Case Studies */
-        .case-studies-section { border-top: 1px solid var(--border); }
-        .case-study-card {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
-            align-items: center; padding: 4rem 0; border-bottom: 1px solid var(--border);
-        }
-        .case-study-card:last-child { border-bottom: none; }
-        .case-study-card.reverse { direction: rtl; }
-        .case-study-card.reverse > * { direction: ltr; }
-        .case-study-image {
-            aspect-ratio: 16/10; background: var(--bg-card); position: relative;
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .case-study-image::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(201,169,110,0.05) 0%, transparent 50%);
-        }
-        .case-study-image .placeholder-text {
-            font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;
-            color: var(--text-muted); font-style: italic;
-        }
-        .case-study-content h3 { font-size: 1.8rem; margin-bottom: 1rem; font-weight: 400; }
-        .case-study-content .tag {
-            display: inline-block; padding: 0.3rem 1rem; border: 1px solid var(--border);
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
-            color: var(--text-muted); margin-bottom: 1.5rem;
-        }
-        .case-study-content p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; }
-        .case-study-stats { display: flex; gap: 2rem; }
-        .case-study-stat h4 {
-            font-family: 'Cormorant Garamond', serif; font-size: 2rem;
-            color: var(--accent); font-weight: 300;
-        }
-        .case-study-stat p {
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted);
-        }
-
-        /* Testimonials */
-        .testimonials-section { border-top: 1px solid var(--border); }
-        .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-        .testimonial-card {
-            background: var(--bg-card); padding: 3rem; border: 1px solid var(--border);
-            transition: all 0.5s var(--ease-out-expo);
-        }
-        .testimonial-card:hover {
-            border-color: rgba(245,240,232,0.15); transform: translateY(-5px);
-        }
-        .testimonial-card .quote {
-            font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;
-            font-style: italic; line-height: 1.5; margin-bottom: 2rem; color: var(--text-primary);
-        }
-        .testimonial-author { display: flex; align-items: center; gap: 1rem; }
-        .testimonial-avatar {
-            width: 50px; height: 50px; border-radius: 50%; background: var(--bg-secondary);
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--accent);
-        }
-        .testimonial-author-info h4 {
-            font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-            font-weight: 500; color: var(--text-primary);
-        }
-        .testimonial-author-info p { font-size: 0.8rem; color: var(--text-muted); }
-
-        /* About */
-        .about-section { position: relative; }
-        .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: start; }
-        .about-text p {
-            color: var(--text-secondary); margin-bottom: 2rem;
-            line-height: 1.9; font-size: 1rem; font-weight: 300;
-        }
-        .about-text p.lead {
-            color: var(--text-primary); font-size: 1.25rem; line-height: 1.6;
-            font-family: 'Cormorant Garamond', serif; font-weight: 300;
-        }
-        .about-quote {
-            border-left: 2px solid var(--accent); padding-left: 2rem; margin: 3rem 0;
-        }
-        .about-quote p {
-            font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;
-            font-style: italic; color: var(--text-primary); line-height: 1.5; margin: 0;
-        }
-        .about-quote .author {
-            font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-style: normal;
-            color: var(--text-muted); margin-top: 1rem;
-            text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        /* Contact */
-        .contact-section { border-top: 1px solid var(--border); padding-bottom: 6rem; }
-        .contact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--border); }
-        .contact-item {
-            padding: 3rem 2rem; text-align: center; border-right: 1px solid var(--border);
-            transition: all 0.5s var(--ease-out-expo); position: relative; overflow: hidden;
-        }
-        .contact-item:last-child { border-right: none; }
-        .contact-item::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(201,169,110,0.05) 0%, transparent 60%);
-            opacity: 0; transition: opacity 0.5s ease;
-        }
-        .contact-item:hover::before { opacity: 1; }
-        .contact-item:hover { background: rgba(255,255,255,0.01); }
-        .contact-item h3 {
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 4px;
-            color: var(--accent); margin-bottom: 1rem;
-            font-family: 'DM Sans', sans-serif; font-weight: 500; position: relative; z-index: 1;
-        }
-        .contact-item a {
-            color: var(--text-secondary); text-decoration: none; font-size: 1rem;
-            transition: color 0.4s ease; position: relative; z-index: 1; font-weight: 300;
-        }
-        .contact-item a:hover { color: var(--text-primary); }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border); padding: 4rem;
-            text-align: center; color: var(--text-muted); font-size: 0.85rem; font-weight: 300;
-        }
-        footer strong { color: var(--text-secondary); font-weight: 400; }
-        footer .links { margin-top: 2rem; }
-        footer a {
-            color: var(--text-muted); text-decoration: none; margin: 0 2rem;
-            transition: color 0.4s ease; font-size: 0.75rem;
-            text-transform: uppercase; letter-spacing: 2px;
-        }
-        footer a:hover { color: var(--accent); }
-
-        /* Reveal Animations */
-        .reveal {
-            opacity: 0; transform: translateY(50px);
-            transition: all 1s var(--ease-out-expo);
-        }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
-        .reveal-delay-1 { transition-delay: 0.1s; }
-        .reveal-delay-2 { transition-delay: 0.2s; }
-        .reveal-delay-3 { transition-delay: 0.3s; }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .stats-grid { flex-direction: column; gap: 3rem; }
-            .stat-item:not(:last-child)::after { display: none; }
-            .about-content { grid-template-columns: 1fr; gap: 4rem; }
-            .testimonial-grid { grid-template-columns: 1fr; }
-            .case-study-card { grid-template-columns: 1fr; gap: 2rem; }
-            .case-study-card.reverse { direction: ltr; }
-            .contact-grid { grid-template-columns: repeat(2, 1fr); }
-            .contact-item:nth-child(2) { border-right: none; }
-            .contact-item:nth-child(1), .contact-item:nth-child(2) { border-bottom: 1px solid var(--border); }
-        }
-        @media (max-width: 768px) {
-            nav { padding: 1.5rem 2rem; }
-            .nav-links { display: none; }
-            section { padding: 6rem 2rem; }
-            .about-content { gap: 3rem; }
-            .contact-grid { grid-template-columns: 1fr; }
-            .contact-item { border-right: none; border-bottom: 1px solid var(--border); }
-            .contact-item:last-child { border-bottom: none; }
-        }
-    </style>
-</head>
-<body>
-    <nav id="navbar">
-        <a href="#" class="logo">${company.split(' ')[0]} <span>${company.split(' ').slice(1).join(' ')}</span></a>
-        <ul class="nav-links">
-            <li><a href="#ueber-uns">Über uns</a></li>
-            <li><a href="#kontakt">Kontakt</a></li>
-        </ul>
-    </nav>
-    ${sections}
-    <footer>
-        <p><strong>${company}</strong> — ${location || 'Deutschland'}</p>
-        <p class="links"><a href="#">Impressum</a><a href="#">Datenschutz</a></p>
-    </footer>
-    <script>
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) { navbar.classList.add('scrolled'); }
-            else { navbar.classList.remove('scrolled'); }
-        });
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-            });
-        });
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } });
-        }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    </script>
-</body>
-</html>`;
-        }
-
-        // ZIP download function
-        function downloadZIP(html, filename) {
             const zip = new JSZip();
-            zip.file('index.html', html);
-
-            // Add README
-            zip.file('README.md', `# ${filename} Website
-
-## Setup
-1. Extract ZIP
-2. Open index.html in browser
-3. Or upload to any web host
-
-## Files
-- index.html - Complete website (CSS inline, no external dependencies)
-
-## Hosting Options
-- GitHub Pages (free)
-- Vercel (free)
-- Netlify (free)
-- Any web server
-`);
-
-            zip.generateAsync({ type: 'blob' }).then(function(content) {
+            zip.file('index.html', generatedHTML);
+            zip.file('README.md', `# ${companyName} Website\n\n## Setup\n1. Entpacke ZIP\n2. Öffne index.html im Browser\n3. Oder lade auf Webhost hoch\n\n## Hosting\n- GitHub Pages (kostenlos)\n- Vercel (kostenlos)\n- Netlify (kostenlos)`);
+            
+            zip.generateAsync({type: 'blob'}).then(content => {
                 const url = URL.createObjectURL(content);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `${filename.toLowerCase().replace(/\s+/g, '-')}-website.zip`;
+                a.download = `${companyName.toLowerCase().replace(/\s+/g, '-')}-website.zip`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             });
+        });
+
+        // Back button
+        document.getElementById('backBtn').addEventListener('click', () => {
+            document.getElementById('resultPage').classList.remove('active');
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('generatorForm').reset();
+            generatedHTML = '';
+        });
+
+        // Website Generator
+        function generateWebsite(data) {
+            const isDark = data.style === 'dark';
+            const bg = isDark ? '#0c0c0c' : '#ffffff';
+            const text = isDark ? '#f5f0e8' : '#1a1a1a';
+            const accent = '#c9a96e';
+            
+            return `<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${data.companyName}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: ${bg};
+            color: ${text};
+            line-height: 1.6;
+        }
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: ${accent};
+            color: ${isDark ? '#0c0c0c' : '#ffffff'};
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .section {
+            padding: 5rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .section p {
+            opacity: 0.8;
+            line-height: 1.8;
+        }
+        .contact {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid ${isDark ? '#333' : '#eee'};
+        }
+        .contact a {
+            color: ${accent};
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div>
+            <h1>${data.companyName}</h1>
+            <p>${data.description}</p>
+            <a href="#contact" class="btn">Kontakt</a>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Über uns</h2>
+        <p>${data.description} Wir bringen langjährige Erfahrung und innovative Lösungen für unsere Kunden.</p>
+    </div>
+    
+    <div class="contact" id="contact">
+        <h2>Kontakt</h2>
+        <p><a href="mailto:${data.email}">${data.email}</a></p>
+    </div>
+</body>
+</html>`;
         }
     </script>
-    <!-- JSZip for ZIP generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </body>
 </html>
